@@ -3,8 +3,12 @@ MenuStudies - CMSSW
 
 ##Basic Intro
 This code is based upon the L1TriggerDPG root analysis macro, found [here](http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/L1TriggerDPG/macros/).
+It extracts pT distributions and calculates rates for l1Extra and l1UpgradeExtra objects from L1TriggerDPG nTuples.
 
 ## Recipe
+
+__(_Note: this recipe requires you to have completed the general recipe found [here](https://github.com/lucasc896/MenuStudies/blob/master/README.md)._)__
+
 The CMSSW environment is setup using the following:
 
 ```
@@ -19,9 +23,7 @@ Place the UpgradeAnalysis code into the L1TriggerDPG code:
 
 ```
 cd UserCode/L1TriggerDPG/macros
-mkdir upgrade
-cd upgrade
-<MORE>
+cp -r $MenuStudies_BASE/CMSSW/macro upgrade
 ```
 
 Build your CMSSW framework:
@@ -36,12 +38,15 @@ scram b -j 4
 The code is run using the following executable macro:
 
 ```
+cd $CMSSW_BASE/src/UserCode/L1TriggerDPG/macros/upgrade
 root -l runAna_66_upgrade.C
 ```
 
 _Note: a similar file for the 45PU scenario can be used._
 
 Within this macro various parameters can be changed wrt the running of the macro.
+
+_FIXME: add variable defns_
 
 ## Additional information
 ###getLumi.py
@@ -53,3 +58,7 @@ It is run using the following recipe:
 ```
 FIXME: Add recipe for getLumi.py
 ```
+
+## Issues
+
+If you experience any issues with this developmental code, please contact <chris.lucas@cernSPAMNOT.ch>.
