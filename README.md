@@ -7,6 +7,16 @@ online nTuple analysis and offline plotting. Each directory
 in this repo will contain a seperate README describing the
 setup and use of the code.
 
+## General Recipe
+
+To setup the code:
+
+```
+git clone https://github.com/lucasc896/MenuStudies.git
+cd MenuStudies
+source env.[c]sh
+```
+
 
 ## Notes
 General instructions for the overall study, as well as results
