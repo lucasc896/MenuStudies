@@ -1,6 +1,5 @@
 MenuStudies
 ===========
-# MenuStudies
 
 ## Brief Description
 The code is split into three main groups: nTuple production,
