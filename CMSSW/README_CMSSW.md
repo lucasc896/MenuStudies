@@ -35,7 +35,7 @@ scram b -j 4
 
 ## Instructions
 
-Input files (L1TriggerDPG nTuples) are input as a list of absolute directories contained in a text file in "inputFiles" (_e.g. [inputFiles_ZBHPF1_UP_2012HPF_45_v3.txt](https://github.com/lucasc896/MenuStudies/blob/master/CMSSW/macro/inputFiles/inputFiles_ZBHPF1_UP_2012HPF_45_v3.txt)_).
+Input files (L1TriggerDPG nTuples) are input as a list of absolute directories contained in a text file in "inputFiles" (*e.g. [inputFiles_ZBHPF1_UP_2012HPF_45_v3.txt](https://github.com/lucasc896/MenuStudies/blob/master/CMSSW/macro/inputFiles/inputFiles_ZBHPF1_UP_2012HPF_45_v3.txt)*).
 
 The code is run using the following executable macro:
 
