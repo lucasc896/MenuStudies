@@ -36,7 +36,20 @@ scram b -j 4
 The code is run using the following executable macro:
 
 ```
-root -l runAna_66.C
+root -l runAna_66_upgrade.C
 ```
 
+_Note: a similar file for the 45PU scenario can be used._
+
 Within this macro various parameters can be changed wrt the running of the macro.
+
+## Additional information
+###getLumi.py
+
+This script is used to get the run lumi details file used in the main analysis macro. It takes the run json as input and calculates "LS\nIntLumi\nInstLumi\nPU" for each LS.
+
+It is run using the following recipe:
+
+```
+FIXME: Add recipe for getLumi.py
+```
