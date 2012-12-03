@@ -1,0 +1,18 @@
+### directories ###
+
+rootfiles/
+
+### file types ###
+
+*.pdf
+*.png
+*.pyc
+*.tex
+*.aux
+*.synctex.gz
+*.root
+*.log
+*.stdout
+*.stderr
+.DS_Store
+*.svn-base
