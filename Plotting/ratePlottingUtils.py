@@ -24,19 +24,21 @@ class RatePlot(object):
     super(RatePlot, self).__init__()
     self.hists = hists
     self.upHists = upHists
-    self.listColors = [r.kBlack, r.kRed, r.kBlue, r.kGreen, r.kYellow-2]
+    self.listColors = [r.kBlack, r.kRed, r.kBlue, r.kGreen, r.kYellow-2, r.kMagenta]
+    self.xLower = 0
+    self.xUpper = 1
+    self.xRebin = 1
     self.Debug = False
     self.DoGrid = True
     self.PUScen = 0
     self.numPlots = len(hists) + len(upHists)
     self.lg = r.TLegend()
+    self.c1 = r.TCanvas()
     self.SetStyle()
-    #define more variables and functions here for initialisation
 
   def MakeRatePlot(self):
     """docstring for MakeRatePlot"""
-    c1 = r.TCanvas()
-    c1.SetLogy()
+    self.c1.SetLogy()
 
     if not self.DoGrid: c1.SetGrid(kFALSE)
 
@@ -47,14 +49,19 @@ class RatePlot(object):
       if self.Debug: print "*** Hist: ", h
       if ctr==0:
         h.Draw()
-        h.GetYaxis().SetRangeUser(100,100000)
+        h.GetYaxis().SetRangeUser(0.01,100000)
         h.GetYaxis().SetLabelSize(0.04)
         h.GetXaxis().SetTitleSize(0.04)
       h.SetLineColor(kCol)
       h.SetFillColor(0)
-      h.DrawCopy("same")
-      h.SetFillColor(r.kViolet)
-      h.Draw("same")
+      h.Rebin(self.xRebin)
+      h.DrawCopy("histsame")
+
+      if self.xUpper != 1:
+        h.GetXaxis().SetRangeUser(self.xLower, self.xUpper)
+      #h.DrawCopy("same")
+      #h.SetFillColor(r.kViolet)
+      #h.Draw("same")
 
       self.lg.AddEntry(h, h.GetTitle(), "L")
 
@@ -77,13 +84,12 @@ class RatePlot(object):
       uh.Draw("same")
       self.lg.AddEntry(uh, uh.GetTitle(), "L")
 
-      
-
     self.lg.Draw()
 
-    if self.Debug: print "*** Canvas: ", c1
+    if self.Debug: print "*** Canvas: ", self.c1
 
-    return c1
+
+    return self.c1
   
 
   def SetStyle(self):
@@ -107,7 +113,6 @@ class RatePlot(object):
     self.lg.SetFillStyle(0)
     self.lg.SetLineColor(0)
     self.lg.SetLineStyle(0)
-    self.lg.SetLineSize(0)
 
 
 
