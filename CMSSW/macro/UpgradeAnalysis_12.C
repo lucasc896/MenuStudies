@@ -55,7 +55,7 @@ class UpgradeAnalysis_12 : public L1Ntuple
     UpgradeAnalysis_12() {}
     ~UpgradeAnalysis_12() {}
     
-    int FillDistros(Long64_t nevents, TString runFile, bool doUpgradeObj);
+    void FillDistros(Long64_t nevents, TString runFile, bool doUpgradeObj);
     void DoRateCalc(TH1D* h1, TH1D *h2, int nLumis);
     void setChrisStyle();
     
@@ -190,144 +190,144 @@ void UpgradeAnalysis_12::setChrisStyle()
 void UpgradeAnalysis_12::BookHistos()
 {
 
-    met_hist            = 	new TH1D("met_distro", "met_distro", 100, 0., 750.);
-    met_rate            = 	new TH1D("ETM_rate", "ETM", 100, 0., 750.);
-    ett_hist            = 	new TH1D("ett_distro", "ett_distro", 100, 0., 750.);
-    ett_rate            = 	new TH1D("ETT_rate", "ETT", 100, 0., 750.);
-    mht_hist            = 	new TH1D("mht_distro", "mht_distro", 100, 0., 750.);
-    mht_rate            = 	new TH1D("HTM_rate", "HTM", 100, 0., 750.);
-    htt_hist            = 	new TH1D("ht_distro", "ht_distro", 100, 0., 750.);
-    htt_rate            = 	new TH1D("HTT_rate", "HTT", 100, 0., 750.);
+    met_hist            = 	new TH1D("met_distro", "met_distro", 750, 0., 750.);
+    met_rate            = 	new TH1D("ETM_rate", "ETM", 750, 0., 750.);
+    ett_hist            = 	new TH1D("ett_distro", "ett_distro", 750, 0., 750.);
+    ett_rate            = 	new TH1D("ETT_rate", "ETT", 750, 0., 750.);
+    mht_hist            = 	new TH1D("mht_distro", "mht_distro", 750, 0., 750.);
+    mht_rate            = 	new TH1D("HTM_rate", "HTM", 750, 0., 750.);
+    htt_hist            = 	new TH1D("ht_distro", "ht_distro", 750, 0., 750.);
+    htt_rate            = 	new TH1D("HTT_rate", "HTT", 750, 0., 750.);
     
-    tau_hist[0]         = 	new TH1D("tau_1_distro", "tau_1_distro_er2p17", 100, 0., 255.);
-    tau_hist[1]         = 	new TH1D("tau_2_distro", "tau_2_distro_er2p17", 100, 0., 255.);
-    tau_hist[2]         =   new TH1D("tau_3_distro", "tau_3_distro_er2p17", 100, 0., 255.);
-    tau_hist[3]         =   new TH1D("tau_4_distro", "tau_4_distro_er2p17", 100, 0., 255.);    
-    tau_rate[0]         =	new TH1D("tau_1_rate", "Single Tau #eta #leq 2.17", 100, 0., 255.);
-    tau_rate[1]         =	new TH1D("tau_2_rate", "Double Tau #eta #leq 2.17", 100, 0., 255.);
-    tau_rate[2]         =   new TH1D("tau_3_rate", "Triple Tau #eta #leq 2.17", 100, 0., 255.);
-    tau_rate[3]         =   new TH1D("tau_4_rate", "Quad Tau #eta #leq 2.17", 100, 0., 255.);
+    tau_hist[0]         = 	new TH1D("tau_1_distro", "tau_1_distro_er2p17", 255, 0., 255.);
+    tau_hist[1]         = 	new TH1D("tau_2_distro", "tau_2_distro_er2p17", 255, 0., 255.);
+    tau_hist[2]         =   new TH1D("tau_3_distro", "tau_3_distro_er2p17", 255, 0., 255.);
+    tau_hist[3]         =   new TH1D("tau_4_distro", "tau_4_distro_er2p17", 255, 0., 255.);    
+    tau_rate[0]         =	new TH1D("tau_1_rate", "Single Tau #eta #leq 2.17", 255, 0., 255.);
+    tau_rate[1]         =	new TH1D("tau_2_rate", "Double Tau #eta #leq 2.17", 255, 0., 255.);
+    tau_rate[2]         =   new TH1D("tau_3_rate", "Triple Tau #eta #leq 2.17", 255, 0., 255.);
+    tau_rate[3]         =   new TH1D("tau_4_rate", "Quad Tau #eta #leq 2.17", 255, 0., 255.);
     
-    isoEG_hist[0]       =	new TH1D("isoEG_1_distro", "isoEG_1_distro_er2p17",100, 0., 63.);
-    isoEG_hist[1]       =	new TH1D("isoEG_2_distro", "isoEG_2_distro_er2p17",100, 0., 63.);
-    isoEG_hist[2]       =	new TH1D("isoEG_3_distro", "isoEG_3_distro_er2p17",100, 0., 63.);
-    isoEG_hist[3]       =	new TH1D("isoEG_4_distro", "isoEG_4_distro_er2p17",100, 0., 63.);
-    isoEG_rate[0]       =	new TH1D("isoEG_1_rate", "Single IsoEG #eta #leq 2.17",100, 0., 63.);
-    isoEG_rate[1]       =	new TH1D("isoEG_2_rate", "Double IsoEG #eta #leq 2.17",100, 0., 63.);
-    isoEG_rate[2]       =	new TH1D("isoEG_3_rate", "Triple IsoEG #eta #leq 2.17",100, 0., 63.);
-    isoEG_rate[3]       =	new TH1D("isoEG_4_rate", "Quad IsoEG #eta #leq 2.17",100, 0., 63.);
+    isoEG_hist[0]       =	new TH1D("isoEG_1_distro", "isoEG_1_distro_er2p17",63, 0., 63.);
+    isoEG_hist[1]       =	new TH1D("isoEG_2_distro", "isoEG_2_distro_er2p17",63, 0., 63.);
+    isoEG_hist[2]       =	new TH1D("isoEG_3_distro", "isoEG_3_distro_er2p17",63, 0., 63.);
+    isoEG_hist[3]       =	new TH1D("isoEG_4_distro", "isoEG_4_distro_er2p17",63, 0., 63.);
+    isoEG_rate[0]       =	new TH1D("isoEG_1_rate", "Single IsoEG #eta #leq 2.17",63, 0., 63.);
+    isoEG_rate[1]       =	new TH1D("isoEG_2_rate", "Double IsoEG #eta #leq 2.17",63, 0., 63.);
+    isoEG_rate[2]       =	new TH1D("isoEG_3_rate", "Triple IsoEG #eta #leq 2.17",63, 0., 63.);
+    isoEG_rate[3]       =	new TH1D("isoEG_4_rate", "Quad IsoEG #eta #leq 2.17",63, 0., 63.);
     
-    muon_hist[0]        =	new TH1D("muon_1_distro", "muon_1_distro", 100, 0., 140.);
-    muon_hist[1]        =	new TH1D("muon_2_distro", "muon_2_distro", 100, 0., 140.);
-    muon_hist[2]        =	new TH1D("muon_3_distro", "muon_3_distro", 100, 0., 140.);
-    muon_hist[3]        =	new TH1D("muon_4_distro", "muon_4_distro", 100, 0., 140.);
-    muon_rate[0]        =	new TH1D("muon_1_rate", "Single Muon", 100, 0., 140.);
-    muon_rate[1]        =	new TH1D("muon_2_rate", "Double Muon", 100, 0., 140.);
-    muon_rate[2]        =	new TH1D("muon_3_rate", "Triple Muon", 100, 0., 140.);
-    muon_rate[3]        =	new TH1D("muon_4_rate", "Quad Muon", 100, 0., 140.);
+    muon_hist[0]        =	new TH1D("muon_1_distro", "muon_1_distro", 140, 0., 140.);
+    muon_hist[1]        =	new TH1D("muon_2_distro", "muon_2_distro", 140, 0., 140.);
+    muon_hist[2]        =	new TH1D("muon_3_distro", "muon_3_distro", 140, 0., 140.);
+    muon_hist[3]        =	new TH1D("muon_4_distro", "muon_4_distro", 140, 0., 140.);
+    muon_rate[0]        =	new TH1D("muon_1_rate", "Single Muon", 140, 0., 140.);
+    muon_rate[1]        =	new TH1D("muon_2_rate", "Double Muon", 140, 0., 140.);
+    muon_rate[2]        =	new TH1D("muon_3_rate", "Triple Muon", 140, 0., 140.);
+    muon_rate[3]        =	new TH1D("muon_4_rate", "Quad Muon", 140, 0., 140.);
     
-    muon_hist_hi[0]     =	new TH1D("muon_hi_1_distro", "muon_1_distro_hi", 100, 0., 140.);
-    muon_hist_hi[1]     =	new TH1D("muon_hi_2_distro", "muon_2_distro_hi", 100, 0., 140.);
-    muon_hist_hi[2]     =	new TH1D("muon_hi_3_distro", "muon_3_distro_hi", 100, 0., 140.);
-    muon_hist_hi[3]     =	new TH1D("muon_hi_4_distro", "muon_4_distro_hi", 100, 0., 140.);
-    muon_rate_hi[0]     =	new TH1D("muon_hi_1_rate", "Single Muon hi", 100, 0., 140.);
-    muon_rate_hi[1]     =	new TH1D("muon_hi_2_rate", "Double Muon hi", 100, 0., 140.);
-    muon_rate_hi[2]     =	new TH1D("muon_hi_3_rate", "Triple Muon hi", 100, 0., 140.);
-    muon_rate_hi[3]     =	new TH1D("muon_hi_4_rate", "Quad Muon hi", 100, 0., 140.);
+    muon_hist_hi[0]     =	new TH1D("muon_hi_1_distro", "muon_1_distro_hi", 140, 0., 140.);
+    muon_hist_hi[1]     =	new TH1D("muon_hi_2_distro", "muon_2_distro_hi", 140, 0., 140.);
+    muon_hist_hi[2]     =	new TH1D("muon_hi_3_distro", "muon_3_distro_hi", 140, 0., 140.);
+    muon_hist_hi[3]     =	new TH1D("muon_hi_4_distro", "muon_4_distro_hi", 140, 0., 140.);
+    muon_rate_hi[0]     =	new TH1D("muon_hi_1_rate", "Single Muon hi", 140, 0., 140.);
+    muon_rate_hi[1]     =	new TH1D("muon_hi_2_rate", "Double Muon hi", 140, 0., 140.);
+    muon_rate_hi[2]     =	new TH1D("muon_hi_3_rate", "Triple Muon hi", 140, 0., 140.);
+    muon_rate_hi[3]     =	new TH1D("muon_hi_4_rate", "Quad Muon hi", 140, 0., 140.);
     
     
-    combEG_hist[0]      =	new TH1D("combEG_1_distro", "combEG_1_distro",100, 0., 63.);
-    combEG_hist[1]      =	new TH1D("combEG_2_distro", "combEG_2_distro",100, 0., 63.);
-    combEG_hist[2]      =	new TH1D("combEG_3_distro", "combEG_3_distro",100, 0., 63.);
-    combEG_hist[3]      =	new TH1D("combEG_4_distro", "combEG_4_distro",100, 0., 63.);
-    combEG_rate[0]      =	new TH1D("combEG_1_rate", "Single EG",100, 0., 63.);
-    combEG_rate[1]      =	new TH1D("combEG_2_rate", "Double EG",100, 0., 63.);
-    combEG_rate[2]      =	new TH1D("combEG_3_rate", "Triple EG",100, 0., 63.);
-    combEG_rate[3]      =	new TH1D("combEG_4_rate", "Quad EG",100, 0., 63.);
+    combEG_hist[0]      =	new TH1D("combEG_1_distro", "combEG_1_distro", 63, 0., 63.);
+    combEG_hist[1]      =	new TH1D("combEG_2_distro", "combEG_2_distro", 63, 0., 63.);
+    combEG_hist[2]      =	new TH1D("combEG_3_distro", "combEG_3_distro", 63, 0., 63.);
+    combEG_hist[3]      =	new TH1D("combEG_4_distro", "combEG_4_distro", 63, 0., 63.);
+    combEG_rate[0]      =	new TH1D("combEG_1_rate", "Single EG", 63, 0., 63.);
+    combEG_rate[1]      =	new TH1D("combEG_2_rate", "Double EG", 63, 0., 63.);
+    combEG_rate[2]      =	new TH1D("combEG_3_rate", "Triple EG", 63, 0., 63.);
+    combEG_rate[3]      =	new TH1D("combEG_4_rate", "Quad EG", 63, 0., 63.);
     
-    combJetsEt_hist[0]  =	new TH1D("combJets_1_distro", "combJets_1_distro", 100, 0., 255.);
-    combJetsEt_hist[1]  =	new TH1D("combJets_2_distro", "combJets_2_distro", 100, 0., 255.);
-    combJetsEt_hist[2]  =	new TH1D("combJets_3_distro", "combJets_3_distro", 100, 0., 255.);
-    combJetsEt_hist[3]  =	new TH1D("combJets_4_distro", "combJets_4_distro", 100, 0., 255.);
-    combJetsEt_hist[4]  =   new TH1D("combJets_5_distro", "combJets_5_distro", 100, 0., 255.);
-    combJetsEt_hist[5]  =   new TH1D("combJets_6_distro", "combJets_6_distro", 100, 0., 255.);    
-    combJetsEt_rate[0]  =	new TH1D("combJets_1_rate", "Single Jet", 100, 0., 255.);
-    combJetsEt_rate[1]  =	new TH1D("combJets_2_rate", "Double Jet", 100, 0., 255.);
-    combJetsEt_rate[2]  =	new TH1D("combJets_3_rate", "Triple Jet", 100, 0., 255.);
-    combJetsEt_rate[3]  =	new TH1D("combJets_4_rate", "Quad Jet", 100, 0., 255.);
-    combJetsEt_rate[4]  =   new TH1D("combJets_5_rate", "Five Jet", 100, 0., 255.);
-    combJetsEt_rate[5]  =   new TH1D("combJets_6_rate", "Six Jet", 100, 0., 255.);    
+    combJetsEt_hist[0]  =	new TH1D("combJets_1_distro", "combJets_1_distro", 255, 0., 255.);
+    combJetsEt_hist[1]  =	new TH1D("combJets_2_distro", "combJets_2_distro", 255, 0., 255.);
+    combJetsEt_hist[2]  =	new TH1D("combJets_3_distro", "combJets_3_distro", 255, 0., 255.);
+    combJetsEt_hist[3]  =	new TH1D("combJets_4_distro", "combJets_4_distro", 255, 0., 255.);
+    combJetsEt_hist[4]  =   new TH1D("combJets_5_distro", "combJets_5_distro", 255, 0., 255.);
+    combJetsEt_hist[5]  =   new TH1D("combJets_6_distro", "combJets_6_distro", 255, 0., 255.);    
+    combJetsEt_rate[0]  =	new TH1D("combJets_1_rate", "Single Jet", 255, 0., 255.);
+    combJetsEt_rate[1]  =	new TH1D("combJets_2_rate", "Double Jet", 255, 0., 255.);
+    combJetsEt_rate[2]  =	new TH1D("combJets_3_rate", "Triple Jet", 255, 0., 255.);
+    combJetsEt_rate[3]  =	new TH1D("combJets_4_rate", "Quad Jet", 255, 0., 255.);
+    combJetsEt_rate[4]  =   new TH1D("combJets_5_rate", "Five Jet", 255, 0., 255.);
+    combJetsEt_rate[5]  =   new TH1D("combJets_6_rate", "Six Jet", 255, 0., 255.);    
 
-    combJetsEr_hist[0]  =	new TH1D("combJetsEr_1_distro", "combJetsEr_1_distro", 100, 0., 255.);
-    combJetsEr_hist[1]  =	new TH1D("combJetsEr_2_distro", "combJetsEr_2_distro", 100, 0., 255.);
-    combJetsEr_hist[2]  =	new TH1D("combJetsEr_3_distro", "combJetsEr_3_distro", 100, 0., 255.);
-    combJetsEr_hist[3]  =	new TH1D("combJetsEr_4_distro", "combJetsEr_4_distro", 100, 0., 255.);
-    combJetsEr_hist[4]  =   new TH1D("combJetsEr_5_distro", "combJetsEr_5_distro", 100, 0., 255.);
-    combJetsEr_hist[5]  =   new TH1D("combJetsEr_6_distro", "combJetsEr_6_distro", 100, 0., 255.);    
-    combJetsEr_rate[0]  =	new TH1D("combJetsEr_1_rate", "Single Jet #eta #leq 3", 100, 0., 255.);
-    combJetsEr_rate[1]  =	new TH1D("combJetsEr_2_rate", "Double Jet #eta #leq 3", 100, 0., 255.);
-    combJetsEr_rate[2]  =	new TH1D("combJetsEr_3_rate", "Triple Jet #eta #leq 3", 100, 0., 255.);
-    combJetsEr_rate[3]  =	new TH1D("combJetsEr_4_rate", "Quad Jet #eta #leq 3", 100, 0., 255.);
-    combJetsEr_rate[4]  =   new TH1D("combJetsEr_5_rate", "Five Jet #eta #leq 3", 100, 0., 255.);
-    combJetsEr_rate[5]  =   new TH1D("combJetsEr_6_rate", "Six Jet #eta #leq 3", 100, 0., 255.);
+    combJetsEr_hist[0]  =	new TH1D("combJetsEr_1_distro", "combJetsEr_1_distro", 255, 0., 255.);
+    combJetsEr_hist[1]  =	new TH1D("combJetsEr_2_distro", "combJetsEr_2_distro", 255, 0., 255.);
+    combJetsEr_hist[2]  =	new TH1D("combJetsEr_3_distro", "combJetsEr_3_distro", 255, 0., 255.);
+    combJetsEr_hist[3]  =	new TH1D("combJetsEr_4_distro", "combJetsEr_4_distro", 255, 0., 255.);
+    combJetsEr_hist[4]  =   new TH1D("combJetsEr_5_distro", "combJetsEr_5_distro", 255, 0., 255.);
+    combJetsEr_hist[5]  =   new TH1D("combJetsEr_6_distro", "combJetsEr_6_distro", 255, 0., 255.);    
+    combJetsEr_rate[0]  =	new TH1D("combJetsEr_1_rate", "Single Jet #eta #leq 3", 255, 0., 255.);
+    combJetsEr_rate[1]  =	new TH1D("combJetsEr_2_rate", "Double Jet #eta #leq 3", 255, 0., 255.);
+    combJetsEr_rate[2]  =	new TH1D("combJetsEr_3_rate", "Triple Jet #eta #leq 3", 255, 0., 255.);
+    combJetsEr_rate[3]  =	new TH1D("combJetsEr_4_rate", "Quad Jet #eta #leq 3", 255, 0., 255.);
+    combJetsEr_rate[4]  =   new TH1D("combJetsEr_5_rate", "Five Jet #eta #leq 3", 255, 0., 255.);
+    combJetsEr_rate[5]  =   new TH1D("combJetsEr_6_rate", "Six Jet #eta #leq 3", 255, 0., 255.);
 
-    fwdJets_distro[0]  =   new TH1D("fwdJets_1_distro", "fwdJets_1_distro", 100, 0., 255.);
-    fwdJets_distro[1]  =   new TH1D("fwdJets_2_distro", "fwdJets_2_distro", 100, 0., 255.);
-    fwdJets_distro[2]  =   new TH1D("fwdJets_3_distro", "fwdJets_3_distro", 100, 0., 255.);
-    fwdJets_distro[3]  =   new TH1D("fwdJets_4_distro", "fwdJets_4_distro", 100, 0., 255.);   
-    fwdJets_rate[0]  =   new TH1D("fwdJets_1_rate", "fwdJets_1_rate", 100, 0., 255.);
-    fwdJets_rate[1]  =   new TH1D("fwdJets_2_rate", "fwdJets_2_rate", 100, 0., 255.);
-    fwdJets_rate[2]  =   new TH1D("fwdJets_3_rate", "fwdJets_3_rate", 100, 0., 255.);
-    fwdJets_rate[3]  =   new TH1D("fwdJets_4_rate", "fwdJets_4_rate", 100, 0., 255.); 
+    fwdJets_distro[0]  =   new TH1D("fwdJets_1_distro", "fwdJets_1_distro", 255, 0., 255.);
+    fwdJets_distro[1]  =   new TH1D("fwdJets_2_distro", "fwdJets_2_distro", 255, 0., 255.);
+    fwdJets_distro[2]  =   new TH1D("fwdJets_3_distro", "fwdJets_3_distro", 255, 0., 255.);
+    fwdJets_distro[3]  =   new TH1D("fwdJets_4_distro", "fwdJets_4_distro", 255, 0., 255.);   
+    fwdJets_rate[0]  =   new TH1D("fwdJets_1_rate", "fwdJets_1_rate", 255, 0., 255.);
+    fwdJets_rate[1]  =   new TH1D("fwdJets_2_rate", "fwdJets_2_rate", 255, 0., 255.);
+    fwdJets_rate[2]  =   new TH1D("fwdJets_3_rate", "fwdJets_3_rate", 255, 0., 255.);
+    fwdJets_rate[3]  =   new TH1D("fwdJets_4_rate", "fwdJets_4_rate", 255, 0., 255.); 
 
-    cenJets_distro[0]  =   new TH1D("cenJets_1_distro", "cenJets_1_distro", 100, 0., 255.);
-    cenJets_distro[1]  =   new TH1D("cenJets_2_distro", "cenJets_2_distro", 100, 0., 255.);
-    cenJets_distro[2]  =   new TH1D("cenJets_3_distro", "cenJets_3_distro", 100, 0., 255.);
-    cenJets_distro[3]  =   new TH1D("cenJets_4_distro", "cenJets_4_distro", 100, 0., 255.);         
-    cenJets_rate[0]  =   new TH1D("cenJets_1_rate", "cenJets_1_rate", 100, 0., 255.);
-    cenJets_rate[1]  =   new TH1D("cenJets_2_rate", "cenJets_2_rate", 100, 0., 255.);
-    cenJets_rate[2]  =   new TH1D("cenJets_3_rate", "cenJets_3_rate", 100, 0., 255.);
-    cenJets_rate[3]  =   new TH1D("cenJets_4_rate", "cenJets_4_rate", 100, 0., 255.);   
+    cenJets_distro[0]  =   new TH1D("cenJets_1_distro", "cenJets_1_distro", 255, 0., 255.);
+    cenJets_distro[1]  =   new TH1D("cenJets_2_distro", "cenJets_2_distro", 255, 0., 255.);
+    cenJets_distro[2]  =   new TH1D("cenJets_3_distro", "cenJets_3_distro", 255, 0., 255.);
+    cenJets_distro[3]  =   new TH1D("cenJets_4_distro", "cenJets_4_distro", 255, 0., 255.);         
+    cenJets_rate[0]  =   new TH1D("cenJets_1_rate", "cenJets_1_rate", 255, 0., 255.);
+    cenJets_rate[1]  =   new TH1D("cenJets_2_rate", "cenJets_2_rate", 255, 0., 255.);
+    cenJets_rate[2]  =   new TH1D("cenJets_3_rate", "cenJets_3_rate", 255, 0., 255.);
+    cenJets_rate[3]  =   new TH1D("cenJets_4_rate", "cenJets_4_rate", 255, 0., 255.);   
 
 
-    diJetEr_hist        =	new TH1D("DoubleJetEtar_distro", "Double Jet Distro #eta #leq 3", 100, 0., 255.);
-    diJetEr_rate        =	new TH1D("DoubleJetEtar_rate", "Double Jet Rate #eta #leq 3", 100, 0., 255.);
-    sinMuEr_hist        =	new TH1D("SingleMuonEtar_distro", "Single Muon Distro #eta #leq 2.1", 100, 0., 140.);
-    sinMuEr_rate        =	new TH1D("SingleMuonEtar_rate", "Single Muon Rate #eta #leq 2.1", 100, 0., 140.);
+    diJetEr_hist        =	new TH1D("DoubleJetEtar_distro", "Double Jet Distro #eta #leq 3", 255, 0., 255.);
+    diJetEr_rate        =	new TH1D("DoubleJetEtar_rate", "Double Jet Rate #eta #leq 3", 255, 0., 255.);
+    sinMuEr_hist        =	new TH1D("SingleMuonEtar_distro", "Single Muon Distro #eta #leq 2.1", 140, 0., 140.);
+    sinMuEr_rate        =	new TH1D("SingleMuonEtar_rate", "Single Muon Rate #eta #leq 2.1", 140, 0., 140.);
     
-    cenpTauJets_distro[0]   =   new TH1D("cenpTauJets_1_distro", "Single Central and Tau Jets #eta #leq 3", 100, 0, 255.);
-    cenpTauJets_distro[1]   =   new TH1D("cenpTauJets_2_distro", "Double Central and Tau Jets #eta #leq 3", 100, 0, 255.);
-    cenpTauJets_distro[2]   =   new TH1D("cenpTauJets_3_distro", "Triple Central and Tau Jets #eta #leq 3", 100, 0, 255.);
-    cenpTauJets_distro[3]   =   new TH1D("cenpTauJets_4_distro", "Quad Central and Tau Jets #eta #leq 3", 100, 0, 255.);
+    cenpTauJets_distro[0]   =   new TH1D("cenpTauJets_1_distro", "Single Central and Tau Jets #eta #leq 3", 255, 0, 255.);
+    cenpTauJets_distro[1]   =   new TH1D("cenpTauJets_2_distro", "Double Central and Tau Jets #eta #leq 3", 255, 0, 255.);
+    cenpTauJets_distro[2]   =   new TH1D("cenpTauJets_3_distro", "Triple Central and Tau Jets #eta #leq 3", 255, 0, 255.);
+    cenpTauJets_distro[3]   =   new TH1D("cenpTauJets_4_distro", "Quad Central and Tau Jets #eta #leq 3", 255, 0, 255.);
 
-    cenpTauJets_rate[0]   =   new TH1D("cenpTauJets_1_rate", "Single Central and Tau Jets Rate #eta #leq 3", 100, 0, 255.);
-    cenpTauJets_rate[1]   =   new TH1D("cenpTauJets_2_rate", "Double Central and Tau Jets Rate #eta #leq 3", 100, 0, 255.);
-    cenpTauJets_rate[2]   =   new TH1D("cenpTauJets_3_rate", "Triple Central and Tau Jets Rate #eta #leq 3", 100, 0, 255.);
-    cenpTauJets_rate[3]   =   new TH1D("cenpTauJets_4_rate", "Quad Central and Tau Jets Rate #eta #leq 3", 100, 0, 255.);
+    cenpTauJets_rate[0]   =   new TH1D("cenpTauJets_1_rate", "Single Central and Tau Jets Rate #eta #leq 3", 255, 0, 255.);
+    cenpTauJets_rate[1]   =   new TH1D("cenpTauJets_2_rate", "Double Central and Tau Jets Rate #eta #leq 3", 255, 0, 255.);
+    cenpTauJets_rate[2]   =   new TH1D("cenpTauJets_3_rate", "Triple Central and Tau Jets Rate #eta #leq 3", 255, 0, 255.);
+    cenpTauJets_rate[3]   =   new TH1D("cenpTauJets_4_rate", "Quad Central and Tau Jets Rate #eta #leq 3", 255, 0, 255.);
 
 
-    doubleEG_cross_hist =	new TH1D("doubleEGCross_distro", "Double EG Cross Trigger distro", 100, 0., 63.);
-    doubleEG_cross_rate =	new TH1D("doubleEGCross_rate", "Double EG Cross Trigger", 100, 0., 63.);
-    doubleMu_cross_hist =	new TH1D("doubleMuCross_distro", "Double Mu Cross Trigger distro", 100, 0., 140.);
-    doubleMu_cross_rate =	new TH1D("doubleMuCross_rate", "Double Mu Cross Trigger", 100, 0., 140.);
-    EGMu_cross_hist     =	new TH1D("EGMuCross_distro", "EG Mu Cross Trigger distro", 100, 0., 63.);
-    EGMu_cross_rate     =	new TH1D("EGMuCross_rate", "EG Mu Cross Trigger", 100, 0., 63.);
-    MuEG_cross_hist     =	new TH1D("MuEGCross_distro", "Mu EG Cross Trigger distro", 100, 0., 140.);
-    MuEG_cross_rate     =	new TH1D("MuEGCross_rate", "Mu EG Cross Trigger", 100, 0., 140.);
-    MuJet_cross_hist    =	new TH1D("MuJetCross_distro", "Mu Jet Cross Trigger distro", 100, 0., 140.);
-    MuJet_cross_rate    =	new TH1D("MuJetCross_rate", "Mu Jet Cross Trigger", 100, 0., 140.);
-    TauEG_cross_hist    =   new TH1D("TauEGCross_distro", "Tau EG Cross Trigger distro", 100, 0., 140.);
-    TauEG_cross_rate    =   new TH1D("TauEGCross_rate", "Tau EG Cross Trigger", 100, 0., 140.);
-    TauMu_cross_hist    =   new TH1D("TauMuCross_distro", "Tau Mu Cross Trigger distro", 100, 0., 140.);
-    TauMu_cross_rate    =   new TH1D("TauMuCross_rate", "Tau Mu Cross Trigger", 100, 0., 140.);
-    IsoEGCenJet_cross_hist = new TH1D("IsoEGCenJet_distro", "IsoEG CenJet Cross Trigger distro", 100, 0., 100.);
-    IsoEGCenJet_cross_rate = new TH1D("IsoEGCenJet_rate", "IsoEG CenJet Cross Trigger", 100, 0., 100.);
-    IsoEGMET_cross_hist = new TH1D("IsoEGMET_distro", "IsoEG MET Cross Trigger distro", 100, 0., 100.);
-    IsoEGMET_cross_rate = new TH1D("IsoEGMET_rate", "IsoEG MET Cross Trigger", 100, 0., 100.);
-    TauTwoFwd_cross_hist    =   new TH1D("TauTwoFwdCross_distro", "Tau TwoFwd Cross Trigger distro", 100, 0., 140.);
-    TauTwoFwd_cross_rate    =   new TH1D("TauTwoFwdCross_rate", "Tau TwoFwd Cross Trigger", 100, 0., 140.);    
+    doubleEG_cross_hist =	new TH1D("doubleEGCross_distro", "Double EG Cross Trigger distro", 63, 0., 63.);
+    doubleEG_cross_rate =	new TH1D("doubleEGCross_rate", "Double EG Cross Trigger", 63, 0., 63.);
+    doubleMu_cross_hist =	new TH1D("doubleMuCross_distro", "Double Mu Cross Trigger distro", 140, 0., 140.);
+    doubleMu_cross_rate =	new TH1D("doubleMuCross_rate", "Double Mu Cross Trigger", 140, 0., 140.);
+    EGMu_cross_hist     =	new TH1D("EGMuCross_distro", "EG Mu Cross Trigger distro", 63, 0., 63.);
+    EGMu_cross_rate     =	new TH1D("EGMuCross_rate", "EG Mu Cross Trigger", 63, 0., 63.);
+    MuEG_cross_hist     =	new TH1D("MuEGCross_distro", "Mu EG Cross Trigger distro", 140, 0., 140.);
+    MuEG_cross_rate     =	new TH1D("MuEGCross_rate", "Mu EG Cross Trigger", 140, 0., 140.);
+    MuJet_cross_hist    =	new TH1D("MuJetCross_distro", "Mu Jet Cross Trigger distro", 140, 0., 140.);
+    MuJet_cross_rate    =	new TH1D("MuJetCross_rate", "Mu Jet Cross Trigger", 140, 0., 140.);
+    TauEG_cross_hist    =   new TH1D("TauEGCross_distro", "Tau EG Cross Trigger distro", 140, 0., 140.);
+    TauEG_cross_rate    =   new TH1D("TauEGCross_rate", "Tau EG Cross Trigger", 140, 0., 140.);
+    TauMu_cross_hist    =   new TH1D("TauMuCross_distro", "Tau Mu Cross Trigger distro", 140, 0., 140.);
+    TauMu_cross_rate    =   new TH1D("TauMuCross_rate", "Tau Mu Cross Trigger", 140, 0., 140.);
+    IsoEGCenJet_cross_hist = new TH1D("IsoEGCenJet_distro", "IsoEG CenJet Cross Trigger distro", 255, 0., 255.);
+    IsoEGCenJet_cross_rate = new TH1D("IsoEGCenJet_rate", "IsoEG CenJet Cross Trigger", 255, 0., 255.);
+    IsoEGMET_cross_hist = new TH1D("IsoEGMET_distro", "IsoEG MET Cross Trigger distro", 255, 0., 255.);
+    IsoEGMET_cross_rate = new TH1D("IsoEGMET_rate", "IsoEG MET Cross Trigger", 255, 0., 255.);
+    TauTwoFwd_cross_hist    =   new TH1D("TauTwoFwdCross_distro", "Tau TwoFwd Cross Trigger distro", 140, 0., 140.);
+    TauTwoFwd_cross_rate    =   new TH1D("TauTwoFwdCross_rate", "Tau TwoFwd Cross Trigger", 140, 0., 140.);    
 
-    h_samplePU          =    new TH1D("h_samplePU", "Sample PU", 5000, 0., 100.);
+    h_samplePU          =    new TH1D("h_samplePU", "Sample PU", 5000, 0., 255.);
     trigOverlap         =	new TH2D("trigOverlap", "Trigger Overlap", 14, 0., 14., 14, 0., 14.);
     cumul_hist          =	new TH1D("cumulative_distro", "cumulative distro", 13, 0., 13.);
     cumul_rate          =	new TH1D("cumulative_rate", "Cumulative Rate", 13 , 0., 13.);
@@ -341,87 +341,87 @@ void UpgradeAnalysis_12::BookHistos()
     BXZero              =	new TH1D("BX after Zero Trigger", "BX after Zero Trigger", 4000, 0., 4000.);
    
    // upgrade histos
-    up_towerJetEt_distro[0]  =    new TH1D("up_towerJet_1_distro", "Distro of Single Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_distro[1]  =    new TH1D("up_towerJet_2_distro", "Distro of Double Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_distro[2]  =    new TH1D("up_towerJet_3_distro", "Distro of Triple Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_distro[3]  =    new TH1D("up_towerJet_4_distro", "Distro of Quad Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_distro[4]  =    new TH1D("up_towerJet_5_distro", "Distro of Five Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_distro[5]  =    new TH1D("up_towerJet_6_distro", "Distro of Six Upgrade Tower Jets", 100, 0., 255.);    
+    up_towerJetEt_distro[0]  =    new TH1D("up_towerJet_1_distro", "Distro of Single Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_distro[1]  =    new TH1D("up_towerJet_2_distro", "Distro of Double Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_distro[2]  =    new TH1D("up_towerJet_3_distro", "Distro of Triple Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_distro[3]  =    new TH1D("up_towerJet_4_distro", "Distro of Quad Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_distro[4]  =    new TH1D("up_towerJet_5_distro", "Distro of Five Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_distro[5]  =    new TH1D("up_towerJet_6_distro", "Distro of Six Upgrade Tower Jets", 255, 0., 255.);    
     
-    up_towerJetEt_rate[0]    =    new TH1D("up_towerJet_1_rate", "Single Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_rate[1]    =    new TH1D("up_towerJet_2_rate", "Double Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_rate[2]    =    new TH1D("up_towerJet_3_rate", "Triple Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_rate[3]    =    new TH1D("up_towerJet_4_rate", "Quad Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_rate[4]    =    new TH1D("up_towerJet_5_rate", "Five Upgrade Tower Jets", 100, 0., 255.);
-    up_towerJetEt_rate[5]    =    new TH1D("up_towerJet_6_rate", "Six Upgrade Tower Jets", 100, 0., 255.);    
+    up_towerJetEt_rate[0]    =    new TH1D("up_towerJet_1_rate", "Single Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_rate[1]    =    new TH1D("up_towerJet_2_rate", "Double Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_rate[2]    =    new TH1D("up_towerJet_3_rate", "Triple Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_rate[3]    =    new TH1D("up_towerJet_4_rate", "Quad Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_rate[4]    =    new TH1D("up_towerJet_5_rate", "Five Upgrade Tower Jets", 255, 0., 255.);
+    up_towerJetEt_rate[5]    =    new TH1D("up_towerJet_6_rate", "Six Upgrade Tower Jets", 255, 0., 255.);    
 
-    up_nonIsoEmEt_distro[0]  =   new TH1D("up_nonIsoEm_1_distro", "Distro of Single Upgrade nonIsoEG", 100, 0., 63.);
-    up_nonIsoEmEt_distro[1]  =   new TH1D("up_nonIsoEm_2_distro", "Distro of Double Upgrade nonIsoEG", 100, 0., 63.);
-    up_nonIsoEmEt_distro[2]  =   new TH1D("up_nonIsoEm_3_distro", "Distro of Triple Upgrade nonIsoEG", 100, 0., 63.);
-    up_nonIsoEmEt_distro[3]  =   new TH1D("up_nonIsoEm_4_distro", "Distro of Quad Upgrade nonIsoEG", 100, 0., 63.);
+    up_nonIsoEmEt_distro[0]  =   new TH1D("up_nonIsoEm_1_distro", "Distro of Single Upgrade nonIsoEG", 63, 0., 63.);
+    up_nonIsoEmEt_distro[1]  =   new TH1D("up_nonIsoEm_2_distro", "Distro of Double Upgrade nonIsoEG", 63, 0., 63.);
+    up_nonIsoEmEt_distro[2]  =   new TH1D("up_nonIsoEm_3_distro", "Distro of Triple Upgrade nonIsoEG", 63, 0., 63.);
+    up_nonIsoEmEt_distro[3]  =   new TH1D("up_nonIsoEm_4_distro", "Distro of Quad Upgrade nonIsoEG", 63, 0., 63.);
     
-    up_nonIsoEmEt_rate[0]    =   new TH1D("up_nonIsoEm_1_rate", "Single Upgrade nonIsoEG", 100, 0., 63.);
-    up_nonIsoEmEt_rate[1]    =   new TH1D("up_nonIsoEm_2_rate", "Double Upgrade nonIsoEG", 100, 0., 63.);
-    up_nonIsoEmEt_rate[2]    =   new TH1D("up_nonIsoEm_3_rate", "Triple Upgrade nonIsoEG", 100, 0., 63.);
-    up_nonIsoEmEt_rate[3]    =   new TH1D("up_nonIsoEm_4_rate", "Quad Upgrade nonIsoEG", 100, 0., 63.);
+    up_nonIsoEmEt_rate[0]    =   new TH1D("up_nonIsoEm_1_rate", "Single Upgrade nonIsoEG", 63, 0., 63.);
+    up_nonIsoEmEt_rate[1]    =   new TH1D("up_nonIsoEm_2_rate", "Double Upgrade nonIsoEG", 63, 0., 63.);
+    up_nonIsoEmEt_rate[2]    =   new TH1D("up_nonIsoEm_3_rate", "Triple Upgrade nonIsoEG", 63, 0., 63.);
+    up_nonIsoEmEt_rate[3]    =   new TH1D("up_nonIsoEm_4_rate", "Quad Upgrade nonIsoEG", 63, 0., 63.);
     
-    up_isoEmEt_distro[0]     =   new TH1D("up_isoEm_1_distro", "Distro of Single Upgrade isoEG", 100, 0., 63.);
-    up_isoEmEt_distro[1]     =   new TH1D("up_isoEm_2_distro", "Distro of Double Upgrade isoEG", 100, 0., 63.);
-    up_isoEmEt_distro[2]     =   new TH1D("up_isoEm_3_distro", "Distro of Triple Upgrade isoEG", 100, 0., 63.);
-    up_isoEmEt_distro[3]     =   new TH1D("up_isoEm_4_distro", "Distro of Quad Upgrade isoEG", 100, 0., 63.);
+    up_isoEmEt_distro[0]     =   new TH1D("up_isoEm_1_distro", "Distro of Single Upgrade isoEG", 63, 0., 63.);
+    up_isoEmEt_distro[1]     =   new TH1D("up_isoEm_2_distro", "Distro of Double Upgrade isoEG", 63, 0., 63.);
+    up_isoEmEt_distro[2]     =   new TH1D("up_isoEm_3_distro", "Distro of Triple Upgrade isoEG", 63, 0., 63.);
+    up_isoEmEt_distro[3]     =   new TH1D("up_isoEm_4_distro", "Distro of Quad Upgrade isoEG", 63, 0., 63.);
     
-    up_isoEmEt_rate[0]       =   new TH1D("up_isoEm_1_rate", "Single Upgrade isoEG", 100, 0., 63.);
-    up_isoEmEt_rate[1]       =   new TH1D("up_isoEm_2_rate", "Double Upgrade isoEG", 100, 0., 63.);
-    up_isoEmEt_rate[2]       =   new TH1D("up_isoEm_3_rate", "Triple Upgrade isoEG", 100, 0., 63.);
-    up_isoEmEt_rate[3]       =   new TH1D("up_isoEm_4_rate", "Quad Upgrade isoEG", 100, 0., 63.);
+    up_isoEmEt_rate[0]       =   new TH1D("up_isoEm_1_rate", "Single Upgrade isoEG", 63, 0., 63.);
+    up_isoEmEt_rate[1]       =   new TH1D("up_isoEm_2_rate", "Double Upgrade isoEG", 63, 0., 63.);
+    up_isoEmEt_rate[2]       =   new TH1D("up_isoEm_3_rate", "Triple Upgrade isoEG", 63, 0., 63.);
+    up_isoEmEt_rate[3]       =   new TH1D("up_isoEm_4_rate", "Quad Upgrade isoEG", 63, 0., 63.);
     
-    up_isoTauEt_distro[0]    =   new TH1D("up_isoTau_1_distro", "Distro of Single Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
-    up_isoTauEt_distro[1]    =   new TH1D("up_isoTau_2_distro", "Distro of Double Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
-    up_isoTauEt_distro[2]    =   new TH1D("up_isoTau_3_distro", "Distro of Triple Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
-    up_isoTauEt_distro[3]    =   new TH1D("up_isoTau_4_distro", "Distro of Quad Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
+    up_isoTauEt_distro[0]    =   new TH1D("up_isoTau_1_distro", "Distro of Single Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
+    up_isoTauEt_distro[1]    =   new TH1D("up_isoTau_2_distro", "Distro of Double Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
+    up_isoTauEt_distro[2]    =   new TH1D("up_isoTau_3_distro", "Distro of Triple Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
+    up_isoTauEt_distro[3]    =   new TH1D("up_isoTau_4_distro", "Distro of Quad Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
     
-    up_isoTauEt_rate[0]      =   new TH1D("up_isoTau_1_rate", "Single Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
-    up_isoTauEt_rate[1]      =   new TH1D("up_isoTau_2_rate", "Double Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
-    up_isoTauEt_rate[2]      =   new TH1D("up_isoTau_3_rate", "Triple Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
-    up_isoTauEt_rate[3]      =   new TH1D("up_isoTau_4_rate", "Quad Upgrade isoTau #eta #leq 2.17", 100, 0., 255.);
+    up_isoTauEt_rate[0]      =   new TH1D("up_isoTau_1_rate", "Single Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
+    up_isoTauEt_rate[1]      =   new TH1D("up_isoTau_2_rate", "Double Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
+    up_isoTauEt_rate[2]      =   new TH1D("up_isoTau_3_rate", "Triple Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
+    up_isoTauEt_rate[3]      =   new TH1D("up_isoTau_4_rate", "Quad Upgrade isoTau #eta #leq 2.17", 255, 0., 255.);
     
-    up_nonIsoTauEt_distro[0] =   new TH1D("up_nonIsoTau_1_distro", "Distro of Single Upgrade nonIsoTau #eta #leq 2.17 #eta #leq 2.17", 100, 0., 255.);
-    up_nonIsoTauEt_distro[1] =   new TH1D("up_nonIsoTau_2_distro", "Distro of Double Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
-    up_nonIsoTauEt_distro[2] =   new TH1D("up_nonIsoTau_3_distro", "Distro of Triple Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
-    up_nonIsoTauEt_distro[3] =   new TH1D("up_nonIsoTau_4_distro", "Distro of Quad Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
+    up_nonIsoTauEt_distro[0] =   new TH1D("up_nonIsoTau_1_distro", "Distro of Single Upgrade nonIsoTau #eta #leq 2.17 #eta #leq 2.17", 255, 0., 255.);
+    up_nonIsoTauEt_distro[1] =   new TH1D("up_nonIsoTau_2_distro", "Distro of Double Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
+    up_nonIsoTauEt_distro[2] =   new TH1D("up_nonIsoTau_3_distro", "Distro of Triple Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
+    up_nonIsoTauEt_distro[3] =   new TH1D("up_nonIsoTau_4_distro", "Distro of Quad Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
     
-    up_nonIsoTauEt_rate[0]   =   new TH1D("up_nonIsoTau_1_rate", "Single Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
-    up_nonIsoTauEt_rate[1]   =   new TH1D("up_nonIsoTau_2_rate", "Double Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
-    up_nonIsoTauEt_rate[2]   =   new TH1D("up_nonIsoTau_3_rate", "Triple Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
-    up_nonIsoTauEt_rate[3]   =   new TH1D("up_nonIsoTau_4_rate", "Quad Upgrade nonIsoTau #eta #leq 2.17", 100, 0., 255.);
+    up_nonIsoTauEt_rate[0]   =   new TH1D("up_nonIsoTau_1_rate", "Single Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
+    up_nonIsoTauEt_rate[1]   =   new TH1D("up_nonIsoTau_2_rate", "Double Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
+    up_nonIsoTauEt_rate[2]   =   new TH1D("up_nonIsoTau_3_rate", "Triple Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
+    up_nonIsoTauEt_rate[3]   =   new TH1D("up_nonIsoTau_4_rate", "Quad Upgrade nonIsoTau #eta #leq 2.17", 255, 0., 255.);
 
-    up_combTauEt_distro[0]     =   new TH1D("up_combTau_1_distro", "Distro of Single Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
-    up_combTauEt_distro[1]     =   new TH1D("up_combTau_2_distro", "Distro of Double Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
-    up_combTauEt_distro[2]     =   new TH1D("up_combTau_3_distro", "Distro of Triple Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
-    up_combTauEt_distro[3]     =   new TH1D("up_combTau_4_distro", "Distro of Quad Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
+    up_combTauEt_distro[0]     =   new TH1D("up_combTau_1_distro", "Distro of Single Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
+    up_combTauEt_distro[1]     =   new TH1D("up_combTau_2_distro", "Distro of Double Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
+    up_combTauEt_distro[2]     =   new TH1D("up_combTau_3_distro", "Distro of Triple Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
+    up_combTauEt_distro[3]     =   new TH1D("up_combTau_4_distro", "Distro of Quad Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
     
-    up_combTauEt_rate[0]     =   new TH1D("up_combTau_1_rate", "Single Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
-    up_combTauEt_rate[1]     =   new TH1D("up_combTau_2_rate", "Double Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
-    up_combTauEt_rate[2]     =   new TH1D("up_combTau_3_rate", "Triple Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
-    up_combTauEt_rate[3]     =   new TH1D("up_combTau_4_rate", "Quad Upgrade combTau #eta #leq 2.17", 100, 0., 255.);
+    up_combTauEt_rate[0]     =   new TH1D("up_combTau_1_rate", "Single Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
+    up_combTauEt_rate[1]     =   new TH1D("up_combTau_2_rate", "Double Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
+    up_combTauEt_rate[2]     =   new TH1D("up_combTau_3_rate", "Triple Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
+    up_combTauEt_rate[3]     =   new TH1D("up_combTau_4_rate", "Quad Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
 
-    up_combEGEt_distro[0]     =   new TH1D("up_combEG_1_distro", "Distro of Single Upgrade combEG", 100, 0., 63.);
-    up_combEGEt_distro[1]     =   new TH1D("up_combEG_2_distro", "Distro of Double Upgrade combEG", 100, 0., 63.);
-    up_combEGEt_distro[2]     =   new TH1D("up_combEG_3_distro", "Distro of Triple Upgrade combEG", 100, 0., 63.);
-    up_combEGEt_distro[3]     =   new TH1D("up_combEG_4_distro", "Distro of Quad Upgrade combEG", 100, 0., 63.);
+    up_combEGEt_distro[0]     =   new TH1D("up_combEG_1_distro", "Distro of Single Upgrade combEG", 63, 0., 63.);
+    up_combEGEt_distro[1]     =   new TH1D("up_combEG_2_distro", "Distro of Double Upgrade combEG", 63, 0., 63.);
+    up_combEGEt_distro[2]     =   new TH1D("up_combEG_3_distro", "Distro of Triple Upgrade combEG", 63, 0., 63.);
+    up_combEGEt_distro[3]     =   new TH1D("up_combEG_4_distro", "Distro of Quad Upgrade combEG", 63, 0., 63.);
     
-    up_combEGEt_rate[0]     =   new TH1D("up_combEG_1_rate", "Single Upgrade combEG", 100, 0., 63.);
-    up_combEGEt_rate[1]     =   new TH1D("up_combEG_2_rate", "Double Upgrade combEG", 100, 0., 63.);
-    up_combEGEt_rate[2]     =   new TH1D("up_combEG_3_rate", "Triple Upgrade combEG", 100, 0., 63.);
-    up_combEGEt_rate[3]     =   new TH1D("up_combEG_4_rate", "Quad Upgrade combEG", 100, 0., 63.);
+    up_combEGEt_rate[0]     =   new TH1D("up_combEG_1_rate", "Single Upgrade combEG", 63, 0., 63.);
+    up_combEGEt_rate[1]     =   new TH1D("up_combEG_2_rate", "Double Upgrade combEG", 63, 0., 63.);
+    up_combEGEt_rate[2]     =   new TH1D("up_combEG_3_rate", "Triple Upgrade combEG", 63, 0., 63.);
+    up_combEGEt_rate[3]     =   new TH1D("up_combEG_4_rate", "Quad Upgrade combEG", 63, 0., 63.);
 
 
-    up_doubleEG_cross_hist =   new TH1D("up_doubleEGCross_distro", "Double EG Upgrade Cross Trigger distro", 100, 0., 63.);
-    up_doubleEG_cross_rate =   new TH1D("up_doubleEGCross_rate", "Double EG Upgrade Cross Trigger", 100, 0., 63.);
-    up_EGMu_cross_hist     =   new TH1D("up_EGMuCross_distro", "EG Mu Upgrade Cross Trigger distro", 100, 0., 63.);
-    up_EGMu_cross_rate     =   new TH1D("up_EGMuCross_rate", "EG Mu Upgrade Cross Trigger", 100, 0., 63.);
-    up_MuEG_cross_hist     =   new TH1D("up_MuEGCross_distro", "Mu EG Upgrade Cross Trigger distro", 100, 0., 140.);
-    up_MuEG_cross_rate     =   new TH1D("up_MuEGCross_rate", "Mu EG Upgrade Cross Trigger", 100, 0., 140.);
+    up_doubleEG_cross_hist =   new TH1D("up_doubleEGCross_distro", "Double EG Upgrade Cross Trigger distro", 63, 0., 63.);
+    up_doubleEG_cross_rate =   new TH1D("up_doubleEGCross_rate", "Double EG Upgrade Cross Trigger", 63, 0., 63.);
+    up_EGMu_cross_hist     =   new TH1D("up_EGMuCross_distro", "EG Mu Upgrade Cross Trigger distro", 63, 0., 63.);
+    up_EGMu_cross_rate     =   new TH1D("up_EGMuCross_rate", "EG Mu Upgrade Cross Trigger", 63, 0., 63.);
+    up_MuEG_cross_hist     =   new TH1D("up_MuEGCross_distro", "Mu EG Upgrade Cross Trigger distro", 140, 0., 140.);
+    up_MuEG_cross_rate     =   new TH1D("up_MuEGCross_rate", "Mu EG Upgrade Cross Trigger", 140, 0., 140.);
 
 }
 
@@ -468,7 +468,7 @@ void UpgradeAnalysis_12::DoRateCalc(TH1D* h1, TH1D *h2, int nLumis)
 // --------------------------------------------------------------------
 //                             run function 
 // --------------------------------------------------------------------
-int UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doUpgradeObj)
+void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doUpgradeObj)
 {
 	//function for making generic rate vs threshold plots
 
@@ -543,7 +543,7 @@ int UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doUp
 
 		for(int i=0; i<trigNum; i++) trigRes[i] = false; //set all to false by default
 
-		if(i!=0 && (i%1000)==0) {std::cout << "- processing event " << i << "\r" << std::flush;}
+		if(i!=0 && (i%2550)==0) {std::cout << "- processing event " << i << "\r" << std::flush;}
 		
         if ((gt_->tw1[2] & 0x0001) > 0){ // check that zero bias trigger fired
 
@@ -1027,11 +1027,13 @@ int UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doUp
 
     
     // calculate the average PU of the sample
-    sampAvgPU /= lumis.size();
-    std::cout << "*** Average PU of sample: " << sampAvgPU << " ***" << std::endl;
-    h_samplePU->Fill(sampAvgPU);
+    if (isData){
+        sampAvgPU /= lumis.size();
+        std::cout << "*** Average PU of sample: " << sampAvgPU << " ***" << std::endl;
+        h_samplePU->Fill(sampAvgPU);
+    }
 
-	std::cout << std::endl << "Total number of events: " << ntot << std::endl;
+	std::cout << "\nTotal number of events: " << ntot << " (" << lumis.size() << " lumiSections)\n" << std::endl;
 
     //==============Create Rate Plots===============//
 
@@ -1091,7 +1093,5 @@ int UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doUp
 
 	outFile->Write();
 	outFile->Close();
-
-	return lumis.size();
 
 } 	
