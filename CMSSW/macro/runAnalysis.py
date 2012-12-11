@@ -9,17 +9,20 @@ Copyright (c) 2012 University of Bristol. All rights reserved.
 
 import ROOT as r
 
+###-------------------------------------------------------------------###
 
 def switches():
 
    mySwitches={
-         "nEvts":1000,
-         "isData":[0, 1][0],
-         "sampPU":[45, 50, 66][1],
+         "nEvts":350000,
+         "isData":[0, 1][1],
+         "sampPU":[45, 50, 66][0],
          "doUpgrade":[0, 1][0],
    }
 
    return mySwitches
+
+###-------------------------------------------------------------------###   
 
 def inFiles():
 
@@ -28,11 +31,19 @@ def inFiles():
    if switches()["isData"]:
       if switches()["sampPU"]==66:
          inFile = "inputFiles/inputFiles_ZBHPF1_UP_2012HPF_66_v3.txt"
+      elif switches()["sampPU"]==45:
+         inFile = "inputFiles/inputFiles_ZBHPF1_UP_2012HPF_45_v3.txt"
    else:
       if switches()["sampPU"]==50:
-         inFile = "inputFiles/inputFiles_MC_Neut_Pt_2to20_PostLS1_v1_realShort.txt"
+         inFile = "inputFiles/inputFiles_MC_Neut_Pt_2to20_PostLS1_v1_short.txt"
+      elif switches()["sampPU"]==66:
+         inFile = "inputFiles/inputFiles_MC_Neut_Pt_2to20_66PU_v1.txt"
+      elif switches()["sampPU"]==45:
+         inFile = "inputFiles/inputFiles_MC_Neut_Pt_2to20_45PU_v1.txt"
 
    return inFile
+
+###-------------------------------------------------------------------###   
 
 def runDetails():
 
@@ -47,8 +58,9 @@ def runDetails():
    return runFile
 
 
-#### MAIN PROGRAM ####
-
+###-------------------------------------------------------------------###
+                        #### MAIN PROGRAM ####
+###-------------------------------------------------------------------###
 
 print ">>> Loading L1 Analysis Macro"
 r.gROOT.ProcessLine(".X ~/trigger_studies/temp/CMSSW_5_3_1/src/UserCode/L1TriggerDPG/macros/initL1Analysis.C")
