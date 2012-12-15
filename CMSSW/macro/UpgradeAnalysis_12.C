@@ -1,4 +1,5 @@
 #include "L1Ntuple.h"
+#include "L1UpgradeNtuple.h"
 #include "hist.C"
 #include "Style.C"
 #include "TEfficiency.h"
@@ -34,12 +35,12 @@ struct order_gt_pairs : public std::binary_function<pair<float, float>, pair<flo
 };
 
 
-class UpgradeAnalysis_12 : public L1Ntuple
+class UpgradeAnalysis_12 : public L1UpgradeNtuple
 {
   public :
 
     //constructor    
-    UpgradeAnalysis_12(std::string filename) : L1Ntuple(filename) {}
+    UpgradeAnalysis_12(std::string filename) : L1UpgradeNtuple(filename) {}
     UpgradeAnalysis_12(bool data, Double_t samplePU, TString mcNotes) {
         isData=data;
 
@@ -56,7 +57,7 @@ class UpgradeAnalysis_12 : public L1Ntuple
     ~UpgradeAnalysis_12() {}
     
     void FillDistros(Long64_t nevents, TString runFile, bool doUpgradeObj);
-    void DoRateCalc(TH1D* h1, TH1D *h2, int nLumis);
+    void DoRateCalc(TH1D* h1, TH1D *h2, int nLumis, int nEvents);
     void setChrisStyle();
     
 
@@ -156,6 +157,8 @@ class UpgradeAnalysis_12 : public L1Ntuple
     TH1D* up_nonIsoTauEt_distro[4];
     TH1D* up_combEGEt_distro[4];
     TH1D* up_combTauEt_distro[4];
+    TH1D* up_muon_hist_hi[4];
+    TH1D* up_muon_rate_hi[4];
     TH1D* up_doubleEG_cross_hist;
     TH1D* up_EGMu_cross_hist;
     TH1D* up_MuEG_cross_hist;
@@ -171,6 +174,20 @@ class UpgradeAnalysis_12 : public L1Ntuple
     TH1D* up_doubleEG_cross_rate;
     TH1D* up_EGMu_cross_rate;
     TH1D* up_MuEG_cross_rate;
+    TH1D* up_doubleMu_cross_hist;
+    TH1D* up_doubleMu_cross_rate;
+    TH1D* up_MuJet_cross_hist;
+    TH1D* up_MuJet_cross_rate;
+    TH1D* up_TauEG_cross_hist;
+    TH1D* up_TauEG_cross_rate;
+    TH1D* up_TauMu_cross_hist;
+    TH1D* up_TauMu_cross_rate;
+    TH1D* up_IsoEGCenJet_cross_hist;
+    TH1D* up_IsoEGCenJet_cross_rate;
+    TH1D* up_IsoEGMET_cross_hist;
+    TH1D* up_IsoEGMET_cross_rate;
+    TH1D* up_TauTwoFwd_cross_hist;
+    TH1D* up_TauTwoFwd_cross_rate;
 
     bool isData;
     Double_t sampPU;
@@ -405,6 +422,16 @@ void UpgradeAnalysis_12::BookHistos()
     up_combTauEt_rate[2]     =   new TH1D("up_combTau_3_rate", "Triple Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
     up_combTauEt_rate[3]     =   new TH1D("up_combTau_4_rate", "Quad Upgrade combTau #eta #leq 2.17", 255, 0., 255.);
 
+    up_muon_hist_hi[0]     =   new TH1D("up_muon_hi_1_distro", "up_muon_1_distro_hi", 140, 0., 140.);
+    up_muon_hist_hi[1]     =   new TH1D("up_muon_hi_2_distro", "up_muon_2_distro_hi", 140, 0., 140.);
+    up_muon_hist_hi[2]     =   new TH1D("up_muon_hi_3_distro", "up_muon_3_distro_hi", 140, 0., 140.);
+    up_muon_hist_hi[3]     =   new TH1D("up_muon_hi_4_distro", "up_muon_4_distro_hi", 140, 0., 140.);
+    
+    up_muon_rate_hi[0]     =   new TH1D("up_muon_hi_1_rate", "upgrade_Single Muon hi", 140, 0., 140.);
+    up_muon_rate_hi[1]     =   new TH1D("up_muon_hi_2_rate", "upgrade_Double Muon hi", 140, 0., 140.);
+    up_muon_rate_hi[2]     =   new TH1D("up_muon_hi_3_rate", "upgrade_Triple Muon hi", 140, 0., 140.);
+    up_muon_rate_hi[3]     =   new TH1D("up_muon_hi_4_rate", "upgrade_Quad Muon hi", 140, 0., 140.);
+
     up_combEGEt_distro[0]     =   new TH1D("up_combEG_1_distro", "Distro of Single Upgrade combEG", 63, 0., 63.);
     up_combEGEt_distro[1]     =   new TH1D("up_combEG_2_distro", "Distro of Double Upgrade combEG", 63, 0., 63.);
     up_combEGEt_distro[2]     =   new TH1D("up_combEG_3_distro", "Distro of Triple Upgrade combEG", 63, 0., 63.);
@@ -416,19 +443,35 @@ void UpgradeAnalysis_12::BookHistos()
     up_combEGEt_rate[3]     =   new TH1D("up_combEG_4_rate", "Quad Upgrade combEG", 63, 0., 63.);
 
 
-    up_doubleEG_cross_hist =   new TH1D("up_doubleEGCross_distro", "Double EG Upgrade Cross Trigger distro", 63, 0., 63.);
-    up_doubleEG_cross_rate =   new TH1D("up_doubleEGCross_rate", "Double EG Upgrade Cross Trigger", 63, 0., 63.);
-    up_EGMu_cross_hist     =   new TH1D("up_EGMuCross_distro", "EG Mu Upgrade Cross Trigger distro", 63, 0., 63.);
-    up_EGMu_cross_rate     =   new TH1D("up_EGMuCross_rate", "EG Mu Upgrade Cross Trigger", 63, 0., 63.);
-    up_MuEG_cross_hist     =   new TH1D("up_MuEGCross_distro", "Mu EG Upgrade Cross Trigger distro", 140, 0., 140.);
-    up_MuEG_cross_rate     =   new TH1D("up_MuEGCross_rate", "Mu EG Upgrade Cross Trigger", 140, 0., 140.);
+    up_doubleEG_cross_hist      =   new TH1D("up_doubleEGCross_distro", "Double EG Upgrade Cross Trigger distro", 63, 0., 63.);
+    up_doubleEG_cross_rate      =   new TH1D("up_doubleEGCross_rate", "Double EG Upgrade Cross Trigger", 63, 0., 63.);
+    up_EGMu_cross_hist          =   new TH1D("up_EGMuCross_distro", "EG Mu Upgrade Cross Trigger distro", 63, 0., 63.);
+    up_EGMu_cross_rate          =   new TH1D("up_EGMuCross_rate", "EG Mu Upgrade Cross Trigger", 63, 0., 63.);
+    up_MuEG_cross_hist          =   new TH1D("up_MuEGCross_distro", "Mu EG Upgrade Cross Trigger distro", 140, 0., 140.);
+    up_MuEG_cross_rate          =   new TH1D("up_MuEGCross_rate", "Mu EG Upgrade Cross Trigger", 140, 0., 140.);
+            
+    up_doubleMu_cross_hist      =   new TH1D("up_doubleMuCross_distro", "Upgrade Double Mu Cross Trigger distro", 140, 0., 140.);
+    up_doubleMu_cross_rate      =   new TH1D("up_doubleMuCross_rate", "Upgrade Double Mu Cross Trigger", 140, 0., 140.);
+    up_MuJet_cross_hist         =   new TH1D("up_MuJetCross_distro", "Upgrade Mu Jet Cross Trigger distro", 140, 0., 140.);
+    up_MuJet_cross_rate         =   new TH1D("up_MuJetCross_rate", "Upgrade Mu Jet Cross Trigger", 140, 0., 140.);
+    up_TauEG_cross_hist         =   new TH1D("up_TauEGCross_distro", "Upgrade Tau EG Cross Trigger distro", 140, 0., 140.);
+    up_TauEG_cross_rate         =   new TH1D("up_TauEGCross_rate", "Upgrade Tau EG Cross Trigger", 140, 0., 140.);
+    up_TauMu_cross_hist         =   new TH1D("up_TauMuCross_distro", "Upgrade Tau Mu Cross Trigger distro", 140, 0., 140.);
+    up_TauMu_cross_rate         =   new TH1D("up_TauMuCross_rate", "Upgrade Tau Mu Cross Trigger", 140, 0., 140.);
+    up_IsoEGCenJet_cross_hist   = new TH1D("up_IsoEGCenJet_distro", "Upgrade IsoEG CenJet Cross Trigger distro", 255, 0., 255.);
+    up_IsoEGCenJet_cross_rate   = new TH1D("up_IsoEGCenJet_rate", "Upgrade IsoEG CenJet Cross Trigger", 255, 0., 255.);
+    up_IsoEGMET_cross_hist      = new TH1D("up_IsoEGMET_distro", "Upgrade IsoEG MET Cross Trigger distro", 255, 0., 255.);
+    up_IsoEGMET_cross_rate      = new TH1D("up_IsoEGMET_rate", "Upgrade IsoEG MET Cross Trigger", 255, 0., 255.);
+    up_TauTwoFwd_cross_hist     =   new TH1D("up_TauTwoFwdCross_distro", "Upgrade Tau TwoFwd Cross Trigger distro", 140, 0., 140.);
+    up_TauTwoFwd_cross_rate     =   new TH1D("up_TauTwoFwdCross_rate", "Upgrade Tau TwoFwd Cross Trigger", 140, 0., 140.);    
+
 
 }
 
 // --------------------------------------------------------------------
 //                          ratecalc function
 // --------------------------------------------------------------------
-void UpgradeAnalysis_12::DoRateCalc(TH1D* h1, TH1D *h2, int nLumis)
+void UpgradeAnalysis_12::DoRateCalc(TH1D* h1, TH1D *h2, int nLumis, int nEvents)
 {
 	//short function to calculate rate plots
 
@@ -440,6 +483,7 @@ void UpgradeAnalysis_12::DoRateCalc(TH1D* h1, TH1D *h2, int nLumis)
     Double_t nSamples = 1; //hack for more than 1 ZB sample
     Double_t xSec_14Tev = 13.762e-27; //14TeV crossSec in cm^-2
     Double_t orbFreq = 11246; //Hz
+    Double_t nBunches = 1404; // 2808 for 25ns
 
     Double_t normalization = 1.;
 
@@ -448,7 +492,9 @@ void UpgradeAnalysis_12::DoRateCalc(TH1D* h1, TH1D *h2, int nLumis)
     }
     else
     {
-        normalization = 1./(nLumis*tLumi);
+        normalization = (orbFreq*nBunches)/nEvents;
+        //std::cout << normalization << std::endl;
+        //std::cout << 1./normalization << std::endl << std::endl;
     }
 
     h2->GetXaxis()->SetTitle("Threshold (GeV)");
@@ -472,7 +518,11 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 {
 	//function for making generic rate vs threshold plots
 
-	std::cout << "\n\n**** Filling pT Distributions\n" << std::endl;
+    bool debug=true;
+
+    std::cout << "\nRunning with Upgrade Objects.\n" << std::endl;
+
+	std::cout << "**** Filling pT Distributions\n" << std::endl;
 
 
 	//load TDR style
@@ -493,14 +543,16 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 
 	double LS[450], IntL[450], PU[450], InstL[450];
 
-	ifstream ifs( runFile );
-	while(ifs){
-		ifs >> LS[ind];
-		ifs >> IntL[ind];
-		ifs >> InstL[ind];
-		ifs >> PU[ind];
-		ind++;
-	}
+	if (isData){
+        ifstream ifs( runFile );
+	    while(ifs){
+    		ifs >> LS[ind];
+    		ifs >> IntL[ind];
+    		ifs >> InstL[ind];
+    		ifs >> PU[ind];
+    		ind++;
+	    }
+    }
 
 	//-------------------------------
 
@@ -509,11 +561,21 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 
     if (isData){
         std::cout << ">>> Running in Data Mode." << std::endl;
-        outFileName << "out_files/output_data_" << sampPU << ".root";
+        if (nevents < 50000){
+            outFileName << "out_files/output_data_" << sampPU << "_lowEvts.root";
+        }
+        else{
+            outFileName << "out_files/output_data_" << sampPU << ".root";
+        }
     }
     else{
         std::cout << ">>> Running in MC Mode." << std::endl;
-        outFileName << "out_files/output_" << mcDescrip << "_PU" << sampPU << ".root";
+        if (nevents < 50000){
+            outFileName << "out_files/output_" << mcDescrip << "_lowEvts.root";
+        }
+        else{
+            outFileName << "out_files/output_" << mcDescrip << ".root";
+        }
     }
 	
     outFileStr = outFileName.str().c_str();
@@ -549,7 +611,7 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 
 			double lumiWeight=1.;
 			int thisLumi = event_->lumi; //get this event's lumi
-	
+
 			if (isData){
                 // set run-specific preScales
                 if (event_->run == 198588) preScale = 44.;
@@ -559,6 +621,20 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
                 for(int k=0; k<ind-1; k++){
 				    if( LS[k]==thisLumi ) lumiWeight = preScale/InstL[k];
                 }
+                //check if the current lumi is unique (used later for rate calc)
+                bool newLumi = true;
+                lumi_distro->Fill(thisLumi);
+                
+                //THIS MUST BE CHANGED IF MULTIPLE RUNS ARE USED
+                for(unsigned int i=0; i<lumis.size(); ++i){
+                    if(lumis.at(i)==thisLumi) newLumi = false;
+                }
+                if(newLumi){
+                    lumis.push_back(thisLumi); //enter unique lumis to vector
+                    for(int k=0; k<ind-1; k++){
+                        if( LS[k]==thisLumi ) sampAvgPU += PU[k];
+                    }
+                }         
             }
             else{
                 lumiWeight = 1.;
@@ -569,27 +645,12 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
             std::vector<double> combEmUp;
 			std::vector< pair<double, double> > combTauUp;
             std::vector< pair<float,float> > muon_hi, muon_lo, muon_open;
+            std::vector< pair<double, double> > muon_hiUp;
 			std::vector< pair<double, double> > combJets;
             std::vector< pair<double, double> > combCenTauJets;
 
 			
 			ntot++; //counter for events ran over
-
-			//check if the current lumi is unique (used later for rate calc)
-			bool newLumi = true;
-			lumi_distro->Fill(thisLumi);
-			
-
-			//THIS MUST BE CHANGED IF MULTIPLE RUNS ARE USED
-			for(unsigned int i=0; i<lumis.size(); ++i){
-				if(lumis.at(i)==thisLumi) newLumi = false;
-			}
-			if(newLumi){
-                lumis.push_back(thisLumi); //enter unique lumis to vector
-                for(int k=0; k<ind-1; k++){
-                    if( LS[k]==thisLumi ) sampAvgPU += PU[k];
-                }
-            }
 
 			   //------- Start Filling Objects --------//
 			for(unsigned int i=0; i<l1extra_->metBx.size(); i++){
@@ -605,6 +666,8 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 			htt_hist->	Fill(l1extra_->ht.at(iMHT), lumiWeight);
 
 			//------------------muon--------------------
+            if (debug) std::cout << "Fill l1extra Muons" << std::endl;
+
 			for(unsigned int i=0; i<l1extra_->nMuons; i++){
 				if(l1extra_->muonEt.at(i) > 0.){
 					if(i<4){
@@ -649,23 +712,9 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
                 }
             }
 
-
-			//if (muon_hi.size()>0){
-            //    muon_hist_hi[0]->Fill(muon_hi.at(0).first, lumiWeight);
-            //}
-//
-            //for(unsigned int i=1; i<muon_lo.size(); i++){
-            //    if (i<4) muon_hist_hi[i]->Fill(muon_lo.at(i).first, lumiWeight);
-            //}
-//
-            //for(unsigned int i=0; i<muon_hi.size(); i++){
-			//	if(i<4){
-			//		//muon_hist_hi[i]->Fill(muon_hi.at(i).first, lumiWeight);
-			//		if((i==0) && (fabs(muon_hi.at(i).second) <= 2.1)) sinMuEr_hist->Fill(muon_hi.at(i).first, lumiWeight);
-			//	}
-			//}
-
 			//---------------combined EG----------------
+            if (debug) std::cout << "Fill l1extra EG" << std::endl;
+
 			// isoEG
 			for(unsigned int i=0; i<l1extra_->nIsoEm; i++){
 				if(l1extra_->isoEmEt.at(i) > 0.){
@@ -695,6 +744,7 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 			}
 			
 			//---------------combined Jet----------------
+            if (debug) std::cout << "Fill l1extra Jets" << std::endl;
 			
 			//tau-jets
 			for(unsigned int i=0; i<l1extra_->nTauJets; i++){ 
@@ -757,40 +807,45 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 				}
 			}
 
+            if (debug) std::cout << "Fill l1extra Cross Triggers" << std::endl;
 			//---------------cross triggers---------------
 			//doubleEG 13:7
+            if (debug) std::cout << "Fill l1extra Cross Triggers - doubleEG" << std::endl;
 			if (combEm.size() > 1){
 			    if (combEm.at(1) > floor(0.5+7.*combEm.at(0)/13.) ) doubleEG_cross_hist->Fill(combEm.at(0), lumiWeight);
 			}
 
 			//doubleMu 12:3.5
+            if (debug) std::cout << "Fill l1extra Cross Triggers - doubleMu" << std::endl;
 			if (muon_hi.size() > 1){
 			    if (muon_hi.at(1).first > floor(0.5+3.5*muon_hi.at(0).first/12.)) doubleMu_cross_hist->Fill(muon_hi.at(0).first, lumiWeight);
 			}
 
 			//EG+mu 12:3.5  and   mu+EG 12:7
+            if (debug) std::cout << "Fill l1extra Cross Triggers - EG/Mu" << std::endl;
 			if ( (muon_hi.size() > 0) && (combEm.size() > 0) ){
 			    if (muon_hi.at(0).first > floor(0.5 + (3.5*combEm.at(0))/12.)) EGMu_cross_hist->Fill(combEm.at(0), lumiWeight);
 			    if (combEm.at(0) > floor(0.5 + (7.*muon_hi.at(0).first)/12.))  MuEG_cross_hist->Fill(muon_hi.at(0).first, lumiWeight);
 			}
 
             //Tau+Mu 12:3.5
-            if ( (muon_hi.size() > 0) && (l1extra_->tauJetEt.size() > 0) ){
-                if (l1extra_->tauJetBx.at(0) != 0) break;
+            if (debug) std::cout << "Fill l1extra Cross Triggers - TauMu" << std::endl;
+            if ( (muon_hi.size() > 0) && (l1extra_->tauJetEt.size() > 0) && (l1extra_->tauJetBx.at(0) == 0) ){
                 if ( muon_hi.at(0).first > floor(0.5+3.5*l1extra_->tauJetEt.at(0)/12.) ){
                     TauMu_cross_hist->Fill(l1extra_->tauJetEt.at(0), lumiWeight);
                 }
             }
 
             //Tau+EG 12:7
-            if ( (combEm.size()>0) && (l1extra_->tauJetEt.size() > 0) ){
-                if (l1extra_->tauJetBx.at(0) != 0) break;
+            if (debug) std::cout << "Fill l1extra Cross Triggers - TauEG" << std::endl;
+            if ( (combEm.size()>0) && (l1extra_->tauJetEt.size() > 0) && (l1extra_->tauJetBx.at(0) == 0) ){
                 if ( combEm.at(0) > floor(0.5+3.5*l1extra_->tauJetEt.at(0)/12.) ){
                     TauEG_cross_hist->Fill(l1extra_->tauJetEt.at(0), lumiWeight);
                 } 
             }
 
             //IsoEGCenJet 13:7
+            if (debug) std::cout << "Fill l1extra Cross Triggers - EGCenJet" << std::endl;
             for(unsigned int i=0; i<l1extra_->nIsoEm;i++){
                 if (l1extra_->nCenJets <= i) break;
                 if ( (fabs(l1extra_->isoEmEta.at(i)) <=2.17) && (l1extra_->isoEmBx.at(i)==0) && (l1extra_->cenJetBx.at(i)==0)){
@@ -802,6 +857,7 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
             }
 //
             //IsoEGMET 13:7
+            if (debug) std::cout << "Fill l1extra Cross Triggers - IsoEGMET" << std::endl;
             for(unsigned int i=0; i<l1extra_->nIsoEm;i++){
                 if ( (fabs(l1extra_->isoEmEta.at(i)) <=2.17) && (l1extra_->isoEmBx.at(i)==0) && (l1extra_->metBx.at(iMET)==0) ){
                     if ( l1extra_->met.at(iMET) > floor(0.5+7*l1extra_->isoEmEt.at(i)/12.) ){
@@ -820,57 +876,57 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 
             //===============UPGRADE OBJECTS===============//
             if (doUpgradeObj){
-                
+                if (debug) std::cout << "Fill upgrade objects" << std::endl;
               //------Tower Jets------//
-              for(unsigned int i=0; i<l1upgrade_->nTowerJets;i++){
-                if(l1upgrade_->towerJetEt.at(i) > 0.){
-                  if(l1upgrade_->towerJetBx.at(i)!=0) break;
-                  if(i<4) up_towerJetEt_distro[i]->Fill(l1upgrade_->towerJetEt.at(i), lumiWeight);
+              for(unsigned int i=0; i<l1upgrade_->nJets;i++){
+                if(l1upgrade_->jetEt.at(i) > 0.){
+                  if(l1upgrade_->jetBx.at(i)!=0) break;
+                  if(i<4) up_towerJetEt_distro[i]->Fill(l1upgrade_->jetEt.at(i), lumiWeight);
                 }
               }
 
               //------nonIsoEm------//
-              for(unsigned int i=0; i<l1upgrade_->nNonIsoEm;i++){
-                double et = l1upgrade_->nonIsoEmEt.at(i);
+              for(unsigned int i=0; i<l1upgrade_->nEG;i++){
+                double et = l1upgrade_->egEt.at(i);
                 if(et > 0.){
-                  if(l1upgrade_->nonIsoEmBx.at(i)!=0) break;
+                  if(l1upgrade_->egBx.at(i)!=0) break;
                   if(i<4) up_nonIsoEmEt_distro[i]->Fill(et, lumiWeight);
                   
                   combEmUp.push_back(et);
                 }
               }
-              
+
               //------isoEm------//
-              for(unsigned int i=0; i<l1upgrade_->nIsoEm;i++){
-                double et = l1upgrade_->isoEmEt.at(i);
+              for(unsigned int i=0; i<l1upgrade_->nIsoEG;i++){
+                double et = l1upgrade_->isoEGEt.at(i);
                 if(et > 0.){
-                  if(l1upgrade_->isoEmBx.at(i)!=0) break;
-                  if(i<4 && fabs(l1upgrade_->isoEmEta.at(i))<=2.17) up_isoEmEt_distro[i]->Fill(et, lumiWeight);
+                  if(l1upgrade_->isoEGBx.at(i)!=0) break;
+                  if(i<4 && fabs(l1upgrade_->isoEGEta.at(i))<=2.17) up_isoEmEt_distro[i]->Fill(et, lumiWeight);
                   
                   combEmUp.push_back(et);
                 }
               }
-
+              if (debug) std::cout << "Fill upgrade combEm" << std::endl;
               //------combEm------//
               sort(combEmUp.begin(), combEmUp.end(), order_gt()); //sort them into descending order
               for(unsigned int i=0; i<4; i++){
                 if(combEmUp.size() > i) up_combEGEt_distro[i]->Fill(combEmUp.at(i), lumiWeight);
               }
-    
+                if (debug) std::cout << "Fill upgrade nonIsoTau" << std::endl;
               //------nonIsoTau------//
-              for(unsigned int i=0; i<l1upgrade_->nNonIsoTaus;i++){
-                double et  = l1upgrade_->nonIsoTauEt.at(i);
-                double eta = l1upgrade_->nonIsoTauEta.at(i);
+              for(unsigned int i=0; i<l1upgrade_->nTau;i++){
+                double et  = l1upgrade_->tauEt.at(i);
+                double eta = l1upgrade_->tauEta.at(i);
                 if(et > 0. && fabs(eta)<=2.17){
-                  if(l1upgrade_->nonIsoTauBx.at(i)!=0) break;
+                  if(l1upgrade_->tauBx.at(i)!=0) break;
                   if(i<4) up_nonIsoTauEt_distro[i]->Fill(et, lumiWeight);
                   pair<double, double> candTau(et, eta);
                   combTauUp.push_back(candTau);
                 }
               }
-              
+                if (debug) std::cout << "Fill upgrade isoTau" << std::endl;
               //------isoTau------//
-              for(unsigned int i=0; i<l1upgrade_->nIsoTaus;i++){
+              for(unsigned int i=0; i<l1upgrade_->nIsoTau;i++){
                 double et=l1upgrade_->isoTauEt.at(i);
                 double eta=l1upgrade_->isoTauEta.at(i);
                 if(et > 0. && fabs(eta) <= 2.17){
@@ -881,33 +937,85 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
                   combTauUp.push_back(candTau);
                 }
               }
+              if (debug) std::cout << "Fill upgrade muon" << std::endl;
+              //-----muon-----//
+              for(unsigned int i=0; i<l1upgrade_->nMuons; i++){
+                double et   = l1upgrade_->muonEt.at(i);
+                double eta  = l1upgrade_->muonEta.at(i);
+                if (l1upgrade_->muonBx.at(i) != 0) break;
+                if (l1upgrade_->muonQuality.at(i) <= 3) break;
+                if (fabs(eta) > 2.1) break;
+
+                pair<double, double> candMu(et, eta);
+                muon_hiUp.push_back(candMu);
+
+                if (i<4) up_muon_hist_hi[i]->Fill(et, lumiWeight);
+              }
 
               //------combTau------//
               sort(combTauUp.begin(), combTauUp.end(), order_gt_pairs());
               for(unsigned int i=0; i<4; i++){
                 if(combTauUp.size()>i) up_combTauEt_distro[i]->Fill(combTauUp.at(i).first, lumiWeight);
               }
-            
+
+              if (debug) std::cout << "Fill upgrade crossTrigs" << std::endl;
               //------CrossTriggers------//
+              
+              if (debug) std::cout << "Fill upgrade crossTrigs - doubleEG" << std::endl;
               //doubleEG 13:7
               if (combEmUp.size() > 1){
                  if (combEmUp.at(1) > floor(0.5+7.*combEmUp.at(0)/13.) ) up_doubleEG_cross_hist->Fill(combEmUp.at(0), lumiWeight);
               }
-
-              //EG+mu 12:3.5  and   mu+EG 12:7
-              if ( (muon_hi.size() > 0) && (combEmUp.size() > 0) ){
-                if (muon_hi.at(0).first > floor(0.5 + (3.5*combEmUp.at(0))/12.)) up_EGMu_cross_hist->Fill(combEmUp.at(0), lumiWeight);
-                if (combEmUp.at(0) > floor(0.5 + (7.*muon_hi.at(0).first)/12.))     up_MuEG_cross_hist->Fill(muon_hi.at(0).first, lumiWeight);
+              
+              if (debug) std::cout << "Fill upgrade crossTrigs - doubleMu" << std::endl;
+              //doubleMu 12:3.5
+              if (muon_hiUp.size() > 1){
+                if (muon_hiUp.at(1).first > floor(0.5+3.5*muon_hiUp.at(0).first/12.)) up_doubleMu_cross_hist->Fill(muon_hiUp.at(0).first, lumiWeight);
               }
+              
+              if (debug) std::cout << "Fill upgrade crossTrigs - EG/mu" << std::endl;
+              //EG+mu 12:3.5  and   mu+EG 12:7
+              if ( (muon_hiUp.size() > 0) && (combEmUp.size() > 0) ){
+                if (muon_hiUp.at(0).first > floor(0.5 + (3.5*combEmUp.at(0))/12.)) up_EGMu_cross_hist->Fill(combEmUp.at(0), lumiWeight);
+                if (combEmUp.at(0) > floor(0.5 + (7.*muon_hiUp.at(0).first)/12.))     up_MuEG_cross_hist->Fill(muon_hiUp.at(0).first, lumiWeight);
+              }
+              
+              if (debug) std::cout << "Fill upgrade crossTrigs - Tau/Mu" << std::endl;
+                //Tau+Mu 12:3.5
+                if ( (muon_hiUp.size() > 0) && (l1upgrade_->tauEt.size() > 0) && (l1upgrade_->tauBx.at(0) == 0) ){
+                    if ( muon_hiUp.at(0).first > floor(0.5+3.5*l1upgrade_->tauEt.at(0)/12.) ){
+                        up_TauMu_cross_hist->Fill(l1upgrade_->tauEt.at(0), lumiWeight);
+                    }
+                }
+                if (debug) std::cout << "Fill upgrade crossTrigs - Tau/EG" << std::endl;
+                //Tau+EG 12:7
+                if ( (combEmUp.size()>0) && (l1upgrade_->tauEt.size() > 0) && (l1upgrade_->tauBx.at(0) == 0) ){
+                    if ( combEmUp.at(0) > floor(0.5+3.5*l1upgrade_->tauEt.at(0)/12.) ){
+                        up_TauEG_cross_hist->Fill(l1upgrade_->tauEt.at(0), lumiWeight);
+                    } 
+                }
+                if (debug) std::cout << "Fill upgrade crossTrigs - IsoEGMET" << std::endl;
+                //IsoEGMET 13:7
 
+                int iMetUp;
+                for(unsigned int i=0; i<l1upgrade_->metBx.size(); i++){
+                    if (l1upgrade_->metBx.at(i)==0) iMetUp=i;
+                }
+
+                for(unsigned int i=0; i<l1upgrade_->nIsoEG;i++){
+                    if (l1upgrade_->met.size()==0) break;
+                    if ( (fabs(l1upgrade_->isoEGEta.at(i)) <=2.17) && (l1upgrade_->isoEGBx.at(i)==0) && (l1upgrade_->metBx.at(iMetUp)==0) ){
+                        if ( l1upgrade_->met.at(iMetUp) > floor(0.5+7*l1upgrade_->isoEGEt.at(i)/12.) ){
+                            up_IsoEGMET_cross_hist->Fill(l1upgrade_->isoEGEt.at(i), lumiWeight);
+                            break;
+                        }    
+                    }
+                }
+                if (debug) std::cout << "End of event loop" << std::endl;
             } //doUpgrade
 
-            
 
-
-
-
-
+            if (debug) std::cout << "Fill cumu plots" << std::endl;
 			//---------------cumulative plot----------------
 			//check triggers bools for filling cumulative plot
 			if (sampPU == 45){
@@ -1037,54 +1145,56 @@ void UpgradeAnalysis_12::FillDistros(Long64_t nevents, TString runFile, bool doU
 
     //==============Create Rate Plots===============//
 
-
     for(int i=0;i<6;i++){
         if (i<4){
-            DoRateCalc(isoEG_hist[i], isoEG_rate[i], lumis.size());
-            DoRateCalc(combEG_hist[i], combEG_rate[i], lumis.size());
-            DoRateCalc(muon_hist_hi[i], muon_rate_hi[i], lumis.size());
-            DoRateCalc(tau_hist[i],tau_rate[i], lumis.size());
-            DoRateCalc(cenpTauJets_distro[i], cenpTauJets_rate[i], lumis.size());
-            DoRateCalc(fwdJets_distro[i], fwdJets_rate[i], lumis.size());
-            DoRateCalc(cenJets_distro[i], cenJets_rate[i], lumis.size());
+            DoRateCalc(isoEG_hist[i], isoEG_rate[i], lumis.size(), nevents);
+            DoRateCalc(combEG_hist[i], combEG_rate[i], lumis.size(), nevents);
+            DoRateCalc(muon_hist_hi[i], muon_rate_hi[i], lumis.size(), nevents);
+            DoRateCalc(tau_hist[i],tau_rate[i], lumis.size(), nevents);
+            DoRateCalc(cenpTauJets_distro[i], cenpTauJets_rate[i], lumis.size(), nevents);
+            DoRateCalc(fwdJets_distro[i], fwdJets_rate[i], lumis.size(), nevents);
+            DoRateCalc(cenJets_distro[i], cenJets_rate[i], lumis.size(), nevents);
         }
-        DoRateCalc(combJetsEt_hist[i], combJetsEt_rate[i], lumis.size());
-        DoRateCalc(combJetsEr_hist[i], combJetsEr_rate[i], lumis.size());
+        DoRateCalc(combJetsEt_hist[i], combJetsEt_rate[i], lumis.size(), nevents);
+        DoRateCalc(combJetsEr_hist[i], combJetsEr_rate[i], lumis.size(), nevents);
     }
     
-    DoRateCalc(met_hist, met_rate, lumis.size());
-    DoRateCalc(ett_hist, ett_rate, lumis.size());
-    DoRateCalc(mht_hist, mht_rate, lumis.size());
-    DoRateCalc(htt_hist, htt_rate, lumis.size());
-    //DoRateCalc(sinMuEr_hist, sinMuEr_rate, lumis.size());
-    DoRateCalc(diJetEr_hist, diJetEr_rate, lumis.size());
-    DoRateCalc(doubleEG_cross_hist, doubleEG_cross_rate, lumis.size());
-    DoRateCalc(doubleMu_cross_hist, doubleMu_cross_rate, lumis.size());
-    DoRateCalc(EGMu_cross_hist, EGMu_cross_rate, lumis.size());
-    DoRateCalc(MuEG_cross_hist, MuEG_cross_rate, lumis.size());
-    DoRateCalc(TauMu_cross_hist, TauMu_cross_rate, lumis.size());
-    DoRateCalc(TauEG_cross_hist, TauEG_cross_rate, lumis.size());
-    DoRateCalc(IsoEGCenJet_cross_hist, IsoEGCenJet_cross_rate, lumis.size());
-    DoRateCalc(IsoEGMET_cross_hist, IsoEGMET_cross_rate, lumis.size());
-    DoRateCalc(TauTwoFwd_cross_hist, TauTwoFwd_cross_rate, lumis.size());
+    DoRateCalc(met_hist, met_rate, lumis.size(), nevents);
+    DoRateCalc(ett_hist, ett_rate, lumis.size(), nevents);
+    DoRateCalc(mht_hist, mht_rate, lumis.size(), nevents);
+    DoRateCalc(htt_hist, htt_rate, lumis.size(), nevents);
+    //DoRateCalc(sinMuEr_hist, sinMuEr_rate, lumis.size(), nevents);
+    DoRateCalc(diJetEr_hist, diJetEr_rate, lumis.size(), nevents);
+    DoRateCalc(doubleEG_cross_hist, doubleEG_cross_rate, lumis.size(), nevents);
+    DoRateCalc(doubleMu_cross_hist, doubleMu_cross_rate, lumis.size(), nevents);
+    DoRateCalc(EGMu_cross_hist, EGMu_cross_rate, lumis.size(), nevents);
+    DoRateCalc(MuEG_cross_hist, MuEG_cross_rate, lumis.size(), nevents);
+    DoRateCalc(TauMu_cross_hist, TauMu_cross_rate, lumis.size(), nevents);
+    DoRateCalc(TauEG_cross_hist, TauEG_cross_rate, lumis.size(), nevents);
+    DoRateCalc(IsoEGCenJet_cross_hist, IsoEGCenJet_cross_rate, lumis.size(), nevents);
+    DoRateCalc(IsoEGMET_cross_hist, IsoEGMET_cross_rate, lumis.size(), nevents);
+    DoRateCalc(TauTwoFwd_cross_hist, TauTwoFwd_cross_rate, lumis.size(), nevents);
 
 
     if (doUpgradeObj){
         
         for(int i=0; i<4; i++){
-            DoRateCalc(up_towerJetEt_distro[i], up_towerJetEt_rate[i], lumis.size());
-            DoRateCalc(up_isoEmEt_distro[i], up_isoEmEt_rate[i], lumis.size());
-            DoRateCalc(up_nonIsoEmEt_distro[i], up_nonIsoEmEt_rate[i], lumis.size());
-            DoRateCalc(up_isoTauEt_distro[i], up_isoTauEt_rate[i], lumis.size());
-            DoRateCalc(up_nonIsoTauEt_distro[i], up_nonIsoTauEt_rate[i], lumis.size());    
-            DoRateCalc(up_combTauEt_distro[i], up_combTauEt_rate[i], lumis.size());
-            DoRateCalc(up_combEGEt_distro[i], up_combEGEt_rate[i], lumis.size());
+            DoRateCalc(up_towerJetEt_distro[i], up_towerJetEt_rate[i], lumis.size(), nevents);
+            DoRateCalc(up_isoEmEt_distro[i], up_isoEmEt_rate[i], lumis.size(), nevents);
+            DoRateCalc(up_nonIsoEmEt_distro[i], up_nonIsoEmEt_rate[i], lumis.size(), nevents);
+            DoRateCalc(up_isoTauEt_distro[i], up_isoTauEt_rate[i], lumis.size(), nevents);
+            DoRateCalc(up_nonIsoTauEt_distro[i], up_nonIsoTauEt_rate[i], lumis.size(), nevents);    
+            DoRateCalc(up_combTauEt_distro[i], up_combTauEt_rate[i], lumis.size(), nevents);
+            DoRateCalc(up_combEGEt_distro[i], up_combEGEt_rate[i], lumis.size(), nevents);
         }
 
-        DoRateCalc(up_doubleEG_cross_hist, up_doubleEG_cross_rate, lumis.size());
-        DoRateCalc(up_EGMu_cross_hist, up_EGMu_cross_rate, lumis.size());
-        DoRateCalc(up_MuEG_cross_hist, up_MuEG_cross_rate, lumis.size());
-
+        DoRateCalc(up_doubleEG_cross_hist, up_doubleEG_cross_rate, lumis.size(), nevents);
+        DoRateCalc(up_EGMu_cross_hist, up_EGMu_cross_rate, lumis.size(), nevents);
+        DoRateCalc(up_MuEG_cross_hist, up_MuEG_cross_rate, lumis.size(), nevents);
+        DoRateCalc(up_doubleMu_cross_hist, up_doubleMu_cross_rate, lumis.size(), nevents);
+        DoRateCalc(up_TauMu_cross_hist, up_TauMu_cross_rate, lumis.size(), nevents);
+        DoRateCalc(up_TauEG_cross_hist, up_TauEG_cross_rate, lumis.size(), nevents);
+        DoRateCalc(up_IsoEGMET_cross_hist, up_IsoEGMET_cross_rate, lumis.size(), nevents);
     }
 
 
