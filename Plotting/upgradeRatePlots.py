@@ -21,6 +21,15 @@ parser.add_option("-m", "--mc",
 						action="store_true", dest="runMC", default=False,
 						help="switch to run over MC samples")
 
+parser.add_option("-b", "--bx",
+						action="store_true", dest="runbx25", default=False,
+						help="switch to run over 25ns bx MC samples")
+
+parser.add_option("-s", "--sampComp",
+						action="store_true", dest="runSampComp", default=False,
+						help="make plots for multiple samples")
+
+
 (options, args) = parser.parse_args()
 
 
@@ -30,43 +39,49 @@ r.gROOT.SetBatch(True)
 if len(argv)<2:
 	print "Please specify a PU scenario, e.g. './upgradeRatePlots.py <PU>"
 	sys.exit()
+else:
+	puScen = float(argv[1])
 
-if argv[1] == "66":
+if puScen == 66:
 	if options.runMC:
 		inFileName = "../rootfiles/output_MC_Neut_Pt_2to20_66PU_v1_PU66.root"
 		outFileName = "plotDump/ratePlots_MC_66PU.pdf"
 	else:
 		inFileName = "../rootfiles/output_0-10066.root"
 		outFileName = "plotDump/ratePlots_66PU.pdf"
-	puScen = 66
-elif argv[1] == "45":
+
+elif puScen == 45:
 	if options.runMC:
-		inFileName = "../rootfiles/output_MC_Neut_Pt_2to20_66PU_v1_PU66.root"
+		inFileName = "../rootfiles/output_2015_PostLS1_PU45_noOOT_v1_short_PU45.root"
 		outFileName = "plotDump/ratePlots_MC_45PU.pdf"
 	else:
 		inFileName = "../rootfiles/output_0-10045.root"
 		outFileName = "plotDump/ratePlots_45PU.pdf"
-	puScen = 45
-elif argv[1] == "50":
-	inFileName = "../rootfiles/output_MC_Neut_Pt_2to20_PostLS1_v1_short_PU50.root "
-	outFileName = "plotDump/ratePlots_MC_50PU.pdf"
-	puScen = 50
+
+elif puScen == 50:
+	if options.runMC:
+		if options.runbx25:
+			pass
+		else:
+			inFileName = "../rootfiles/output_MC_Neut_Pt_2to20_PostLS1_v1_short_PU50.root "
+			outFileName = "plotDump/ratePlots_MC_50PU.pdf"
 
 
 def plotDetails(histKey=""):
 
 	plotVars={
 
-			"Jet":10,
+			"Jet":1,
 			"EG":1,
-			"Tau":10,
-			"ETT":20,
-			"ETM":20,
-			"HTT":20,
-			"HTM":20,
-			"Muon":10,
-
+			"Tau":1,
+			"ETT":1,
+			"ETM":1,
+			"HTT":1,
+			"HTM":1,
+			"Muon":1,
 	}
+
+	return plotVars
 
 
 print "\n\n","*"*37
@@ -82,14 +97,14 @@ histList = {
 				"combJets_3_rate",
 				"combJets_4_rate",
 				"combJets_5_rate",
-				"combJets_6_rate",], 70, 5]),
+				"combJets_6_rate",], 70, 1]),
 
 		"jetsEr":([["combJetsEr_1_rate",
 				"combJetsEr_2_rate",
 				"combJetsEr_3_rate",
 				"combJetsEr_4_rate",
 				"combJetsEr_5_rate",
-				"combJetsEr_6_rate"], 70, 5]),
+				"combJetsEr_6_rate"], 70, 1]),
 
 		"combEG":([["combEG_1_rate",
 				"combEG_2_rate",
@@ -99,12 +114,12 @@ histList = {
 		"enSums":([["ETT_rate",
 				"ETM_rate",
 				"HTT_rate",
-				"HTM_rate",], 700, 30]),
+				"HTM_rate",], 700, 1]),
 
 		"isoEG":([["isoEG_1_rate",
 				"isoEG_2_rate",
 				"isoEG_3_rate",
-				"isoEG_4_rate",], 200, 3]),
+				"isoEG_4_rate",], 200, 1]),
 
 #		"tau":([["tau_1_rate",
 #				"tau_2_rate",], 200]),
@@ -112,24 +127,24 @@ histList = {
 		"cenTauJets":([["cenpTauJets_1_rate",
 				"cenpTauJets_2_rate",
 				"cenpTauJets_3_rate",
-				"cenpTauJets_4_rate",], 100, 5]),
+				"cenpTauJets_4_rate",], 100, 1]),
 
 		"muonHi":([["muon_hi_1_rate",
 				"muon_hi_2_rate",
 				"muon_hi_3_rate",
-				"muon_hi_4_rate",], 200, 5]),
+				"muon_hi_4_rate",], 200, 1]),
 
 		"crossTrig1":([["DoubleJetEtar_rate",
 				"SingleMuonEtar_rate",
 				"TauEGCross_rate",
 				"IsoEGCenJet_rate",
-				"IsoEGMET_rate"], 60, 3]),
+				"IsoEGMET_rate"], 60, 1]),
 
 		"crossTrig2":([["doubleEGCross_rate",
 				"doubleMuCross_rate",
 				"EGMuCross_rate",
 				"MuEGCross_rate",
-				"MuJetCross_rate",], 40, 3]),
+				"MuJetCross_rate",], 40, 1]),
 
 #		"combEGUp":([["up_combEG_1_rate",
 #				"up_combEG_2_rate",
