@@ -11,6 +11,7 @@ import sys
 import os
 import ROOT as r
 import math
+import configuration as conf
 
 
 def GetRateVal(h1=None, thresh=0):
@@ -25,12 +26,13 @@ class RatePlot(object):
     self.hists = hists
     self.upHists = upHists
     self.listColors = [r.kBlack, r.kRed, r.kBlue, r.kGreen, r.kYellow-2, r.kMagenta]
-    self.xLower = 0
-    self.xUpper = 1
+    self.xRange = []
     self.xRebin = 1
     self.Debug = False
     self.DoGrid = True
     self.PUScen = 0
+    self.sampName = ""
+    self.histName = ""
     self.numPlots = len(hists) + len(upHists)
     self.lg = r.TLegend()
     self.c1 = r.TCanvas()
@@ -49,25 +51,19 @@ class RatePlot(object):
       if self.Debug: print "*** Hist: ", h
       if ctr==0:
         h.Draw()
-        h.GetYaxis().SetRangeUser(0.01,100000)
+        h.GetYaxis().SetRangeUser(100,100000)
         h.GetYaxis().SetLabelSize(0.04)
         h.GetXaxis().SetTitleSize(0.04)
       h.SetLineColor(kCol)
+      h.SetLineWidth(1)
       h.SetFillColor(0)
       h.Rebin(self.xRebin)
       h.DrawCopy("histsame")
 
-      if self.xUpper != 1:
-        h.GetXaxis().SetRangeUser(self.xLower, self.xUpper)
-      #h.DrawCopy("same")
-      #h.SetFillColor(r.kViolet)
-      #h.Draw("same")
+      if self.xRange:
+        h.GetXaxis().SetRangeUser(self.xRange[0], self.xRange[1])
 
       self.lg.AddEntry(h, h.GetTitle(), "L")
-
-      if self.Debug:
-        print "Color", kCol
-        print "Counter", ctr
 
       ctr+=1
     
@@ -88,7 +84,9 @@ class RatePlot(object):
 
     if self.Debug: print "*** Canvas: ", self.c1
 
-
+    if conf.switches()["indivPlots"]:
+      self.c1.Print("plotDump/%s_%s.png"%(self.sampName, self.histName))
+    
     return self.c1
   
 
@@ -207,10 +205,133 @@ class Print(object):
 
   def PrintCanvas(self, c1):
     """docstring for PrintCanvas"""
+
+    self.canvas = c1
+
     num = r.TLatex(0.95,0.01,"%d"%(self.pageCounter))
     num.SetNDC()
     if self.DoPageNum: num.Draw("same")
-    c1.Print(self.fname)
+    self.canvas.Print(self.fname)
     self.pageCounter += 1
     pass
 
+
+###-------------------------------------------------------------------###
+
+def getHistOrder(hList=None):
+  """returns a list of the reverse order of hList"""
+
+  maxVals = []
+  myOrder = []
+
+  for h, i in zip(hList, range( len(hList) )):
+    maxVals.append(h.GetMaximum())
+  tmpMax = sorted(maxVals, reverse=True)
+
+  for i in range(len(tmpMax)):
+    for k in range(len(maxVals)):
+      if tmpMax[i] == maxVals[k]:
+        myOrder.append(k)
+
+  return myOrder
+
+###-------------------------------------------------------------------###
+
+def comparPlots(hList=None, debug=None, doLogy=False):
+
+  sSamp = conf.comparSamps()
+
+  if debug:
+    print "comparPlots: %s"%hList[0].GetName()
+
+  #defult colors
+  #colors = [r.kRed, r.kBlue, r.kGreen, r.kCyan, r.kMagenta]
+  colors = []
+
+  #swap in specific colors
+  for s in sSamp:
+    colors.append( conf.samples()[s][1] )
+
+  c1 = r.TCanvas()
+  r.gStyle.SetOptStat(0)
+
+  if len(hList)==2:
+    lg = r.TLegend(0.68, 0.73, 0.895, 0.89)
+  elif len(hList)==3:
+    lg = r.TLegend(0.65, 0.73, 0.895, 0.89)
+  elif len(hList)==4:
+    lg = r.TLegend(0.64, 0.64, 0.895, 0.89)
+  elif len(hList)==5:
+    lg = r.TLegend(0.65, 0.61, 0.895, 0.89)
+
+  hOrder = getHistOrder(hList)
+
+  pd1 = r.TPad("pd1", "pd1", 0., 0.3, 1., 1.)
+  pd1.SetBottomMargin(0.01)
+  pd1.Draw()
+  pd1.SetLogy()
+
+  pd2 = r.TPad("pd2", "pd2", 0., 0., 1., 0.3)
+  pd2.SetTopMargin(0.05)
+  pd2.SetBottomMargin(0.22)
+  pd2.SetGridx(1)
+  pd2.SetGridy(1)
+  pd2.Draw()
+
+  pd1.cd()
+
+  ctr=0
+  for i in hOrder:
+    hList[i].SetFillColor(0)
+    hList[i].SetLineWidth(2)
+    hList[i].SetLineColor(colors[i])
+    hList[i].GetYaxis().SetRangeUser(100, 100000)
+    lg.Draw()
+
+    for key, val in conf.plots().iteritems():
+      if key in hList[i].GetName():
+        ranges = val["xRange"]
+        hList[i].GetXaxis().SetRangeUser(ranges[0], ranges[1])
+        hList[i].Rebin(val["rebinX"])
+
+    lg.AddEntry(hList[i], sSamp[i], "L")
+    if ctr==0: hList[i].DrawCopy("hist")
+    else: hList[i].Draw("histsame")
+    #if "up_" in hList[i].GetTitle():
+    #  hList[i].SetLineStyle(2)
+
+    
+    ctr+=1
+
+  hList[hOrder[0]].SetFillStyle(0)
+  hList[hOrder[1]].SetFillStyle(0)
+
+  lg.SetFillColor(0)
+  lg.SetFillStyle(0)
+  lg.SetLineColor(0)
+  lg.SetLineStyle(0)
+  lg.Draw()
+
+  pd2.cd()
+
+  hList[hOrder[0]].Divide( hList[hOrder[1]] )
+  hList[hOrder[0]].SetMarkerStyle(7)
+  hList[hOrder[0]].SetMarkerSize(1)
+  hList[hOrder[0]].SetLineWidth(1)
+  hList[hOrder[0]].SetLineColor(r.kRed)
+  hList[hOrder[0]].GetXaxis().SetTitle("Threshold p_{T} / GeV")
+  #hList[hOrder[0]].GetYaxis().SetTitle("Full/Fast")
+  hList[hOrder[0]].GetYaxis().SetRangeUser(0,2)
+  hList[hOrder[0]].SetLabelSize(0.08, "X")
+  hList[hOrder[0]].SetLabelSize(0.07, "Y")
+  hList[hOrder[0]].SetTitleSize(0.09, "X")
+  hList[hOrder[0]].SetTitleSize(0.09, "Y")
+  hList[hOrder[0]].SetTitleOffset(0.25, "Y")
+  hList[hOrder[0]].Draw("pe1")
+  
+  c1.Print("plotDump/compare_%s.png"%(hList[0].GetName()))
+  if doLogy:
+    c1.SetLogy(1)
+    c1.Print("plotDump/compare_%s_log.png"%(hList[0].GetName()))  
+
+  del c1
