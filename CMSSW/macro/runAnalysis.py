@@ -14,7 +14,7 @@ parser = OptionParser()
 
 parser.add_option("-r", "--run",
                   action="store_true", dest="runMacro", default=False,
-                  help="run the analysis macro")
+                  help="run the analysis macro!")
 parser.add_option("-d", "--debug",
                   action="store_true", dest="doDebug", default=False,
                   help="run in debug mode")
@@ -28,10 +28,10 @@ def switches():
 
    mySwitches={
          "nEvts":350000,
-         "isData":[0, 1][1],
-         "sampPU":[35, 45, 50, 66][1],
+         "isData":[0, 1][0],
+         "sampPU":[35, 45, 50, 66][2],
          "doUpgrade":[0, 1][1],
-         "bxVal":[25, 50][1],
+         "bxVal":[25, 50][0],
    }
 
    return mySwitches
